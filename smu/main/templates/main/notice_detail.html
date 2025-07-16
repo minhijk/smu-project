@@ -1,0 +1,13 @@
+{% extends "main/base.html" %}
+
+{% block title %}{{ notice.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ notice.title }}</h1>
+<div class="meta">
+    <h3>작성자: {{ notice.author }} 작성일: {{ notice.created_at|date:"Y-m-d" }}</h3>
+</div>
+<p>{{ notice.content|linebreaks }}</p>
+<br>
+<a href="/noticelist" style="color: #0d47a1; text-decoration: none;">목록으로 돌아가기</a>
+{% endblock %}

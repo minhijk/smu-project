@@ -1,0 +1,29 @@
+{% extends "main/base.html" %}
+
+{% block title %}공지사항 목록{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 20px;">공지사항 목록</h2>
+
+<form action="/notice/search" method="get" style="margin-top: 30px;">
+   <div style="display: flex; margin: 20px 0;">
+    <input type="text" name="q" value="{{ query }}" placeholder="검색" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: white; color: #333;">
+    <button style="background: #99aaff; border: none; padding: 10px 20px; cursor: pointer;">검색</button>
+  </div>
+</form>
+
+<ul style="list-style: none; padding: 0; margin: 0;">
+  {% for notice in notices %}
+    <li style="padding: 12px 0; border-bottom: 1px solid #333;">
+      <a href="/notice?id={{ notice.id }}" style="text-decoration: none; color: black; font-size: 1.1em;">
+        {{ notice.title }}
+      </a>
+      <div style="font-size: 0.9em; color: #555; margin-top: 4px;">
+        작성자: {{ notice.author }} | 작성일: {{ notice.created_at|date:"Y-m-d" }}
+      </div>
+    </li>
+  {% empty %}
+    <li style="color: gray;">공지사항이 없습니다.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

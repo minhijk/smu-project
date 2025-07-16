@@ -1,0 +1,69 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}상명대학교{% endblock %}
+
+{% block content %}
+<section>
+  <div class="slider-container">
+    <div class="slide active">
+      <img src="{% static 'main/banner1.png' %}" alt="배너1">
+    </div>
+    <div class="slide">
+      <video src="{% static 'main/banner2.mp4' %}" autoplay loop muted playsinline></video>
+    </div>
+    <div class="slide">
+      <a href="https://zep.us/play/N30Qpo" target="_blank">
+        <img src="{% static 'main/banner3.png' %}" alt="배너3">
+      </a>
+    </div>
+
+    <div class="nav-arrows">
+      <div class="prev">&#8592;</div>
+      <div class="next">&#8594;</div>
+    </div>
+
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+</section>
+
+<section id="notice" style="background-color:white; color:#111; display: flex; gap: 40px; padding: 40px;">
+  <!-- 검색 -->
+  <div style="flex: 1;">
+    <h2 style="font-size: 2em; line-height: 1.5;">그대, 상명을 원천으로<br>세상에 솟는 샘물 되어라.</h2>
+    <form action="/notice/search" method="get" style="margin-top: 30px;">
+      <div style="display: flex; margin: 20px 0;">
+        <input type="text" name="q" value="{{ query }}" placeholder="검색" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: white; color: #333;">
+        <button style="background: #99aaff; border: none; padding: 10px 20px; cursor: pointer;">검색</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 통합공지 -->
+  <div style="flex: 2;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="font-size: 2em; margin: 0;">통합공지</h2>
+      <a href="/noticelist" style="color: black; font-size: 0.9em; text-decoration: none;">더보기</a>
+    </div>
+
+    <ul style="list-style: none; padding: 0;">
+      {% for notice in notices %}
+      <li style="padding: 10px 0; border-bottom: 1px solid #ddd;">
+        <a href="/notice?id={{ notice.id }}" style="text-decoration: none; color: #0d47a1; font-size: 1.1em;">
+          {{ notice.title }}
+        </a>
+        <div style="font-size: 0.9em; color: black; margin-top: 4px;">
+          작성자: {{ notice.author }} | 작성일: {{ notice.created_at|date:"Y-m-d" }}
+        </div>
+      </li>
+      {% empty %}
+      <li>공지사항이 없습니다.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,311 @@
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f7f7fc;
+  color: #333;
+}
+
+.container {
+  display: flex;
+}
+
+/* 사이드바 */
+.sidebar {
+  width: 200px;
+  height: 100vh;          
+  overflow-y: auto;       
+  background: linear-gradient(to bottom, #062D8F, #071D5B);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.sidebar-header {
+  padding: 20px;
+  font-size: 1.4em;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-item {
+  padding: 15px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.3s;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item.active {
+  background-color: #1C317D;
+  font-weight: bold;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  border: 2px dashed red;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+}
+
+.language-select {
+  color: white;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+/* 서브 메뉴 */
+.sub-menu {
+  position: fixed;
+  top: 0;
+  left: 200px;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #0d47a1;
+  color: white;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  transition: transform 0.4s ease;
+  transform: translateX(-100%);
+  z-index: 9;
+}
+
+.sub-menu.active {
+  transform: translateX(0%);
+}
+
+.sub-menu h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+}
+
+.sub-menu .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.sub-menu input[type="text"] {
+  width: 90%;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.6); /* 반투명 흰색 테두리 */
+  border-radius: 6px;
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  background: transparent; /* 투명 */
+  color: white;
+  outline: none;
+}
+
+.sub-menu button,
+.sub-menu .tag-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.6); /* 반투명 흰 테두리 */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px; /* 타원형 */
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background 0.3s, border 0.3s;
+  margin: 5px;
+}
+.sub-menu button:hover,
+.sub-menu .tag-btn:hover {
+  background: rgba(255,255,255,0.2); /* hover 시 살짝 흰 배경 */
+  border: 1px solid rgba(255,255,255,0.8);
+}
+
+.main-content {
+  margin-left: 200px;
+  padding: 40px;
+}
+
+section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 캘린더 컨테이너 */
+/* 공통 박스 스타일 */
+section, .calendar-container {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+/* 캘린더 상단 제목 (학사일정 | 학사안내) */
+.calendar-top-bar {
+  display: flex;
+  align-items: center;
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.calendar-top-bar span {
+  margin: 0 10px;
+  color: #999;
+  font-weight: normal;
+}
+.calendar-top-bar-line {
+  border-bottom: 2px solid #0d47a1;
+  margin-bottom: 20px;
+}
+
+/* FullCalendar */
+#calendar {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 1000px;
+  margin: 20px auto;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.8em;
+  color: #0d47a1;
+}
+
+.fc-button-primary {
+  background: #0d47a1;
+  border: none;
+}
+.fc-button-primary:hover {
+  background: #08306b;
+}
+.fc-daygrid-event {
+  background-color: #1c7ed6;
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.9em;
+}
+.fc .fc-daygrid-day-number {
+  font-weight: bold;
+}
+
+.slider-container {
+  position: relative;
+  width: 100%;  /* 부모인 section에 맞게 */
+  overflow: hidden;
+}
+
+.slide img, .slide video {
+  width: 100%;
+  border-radius: 8px; /* section이 이미 radius 있으니 살짝만 */
+  object-fit: cover;
+}
+
+
+.slide {
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide img, .slide video {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.nav-arrows {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 20px;
+}
+
+.nav-arrows .prev, .nav-arrows .next {
+  background: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 24px;
+  transition: background 0.3s;
+  margin-right: 40px; /* 오른쪽에서 더 들어오도록 */
+}
+.nav-arrows .prev:hover, .nav-arrows .next:hover {
+  background: rgba(255,255,255,0.8);
+}
+
+.dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #333;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.dot.active {
+  background: #333;
+}
+
+.nav-arrows .prev, .nav-arrows .next {
+  background: rgba(0,0,0,0.6); /* 더 진한 검정 반투명 배경으로 변경 */
+  color: white; /* 글씨색 흰색으로 명확히 */
+  z-index: 5; /* 이미지보다 위에 오도록 */
+  font-size: 32px;
+  padding: 10px 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.nav-arrows {
+  z-index: 5; /* 혹시 div 자체가 뒤로 가 있을 경우 */
+}
+

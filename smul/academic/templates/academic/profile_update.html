@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% block title %}개인정보수정{% endblock %}
+
+{% block content %}
+<h3>개인정보 수정</h3>
+
+<!-- 고정된 예시 정보 -->
+<p>학번: 202121320</p>
+<p>성명: 이민혁</p>
+<p>성별: 남</p>
+<p>소속: 정보보안공학과</p>
+<p>지도교수: 서창진</p>
+<p>국적: 대한민국</p>
+<p>전화번호: 010-9829-7141</p>
+<p>이메일: hyeok7141@daum.net</p>
+
+<hr>
+
+<!-- 수정 가능한 필드 -->
+<form method="POST">
+  {% csrf_token %}
+  <label>영문 이름:</label>
+  <input type="text" name="english_name"><br>
+
+  <label>은행명:</label>
+  <input type="text" name="bank_name"><br>
+
+  <label>계좌번호:</label>
+  <input type="text" name="account_number"><br>
+
+  <label>예금주:</label>
+  <input type="text" name="account_holder"><br>
+
+  <button type="submit">저장</button>
+</form>
+
+{% endblock %}

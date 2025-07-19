@@ -24,7 +24,7 @@ urlpatterns = [
     #path('lecture/', include('lecture.urls')),
     path('grade/', include('grade.urls')),
     path('evaluation/', include('evaluation.urls')),
-    #path('graduation/', include('graduation.urls')),
+    path('graduation/', include('graduation.urls')),
     #path('registration/', include('registration.urls')),
    
 ]

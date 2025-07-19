@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>상명대학교 통합정보시스템</title>
+  {% load static %}
   <link rel="stylesheet" href="{% static 'main/style.css' %}">
 </head>
 <body>
@@ -74,7 +75,7 @@
         졸업 <span class="arrow">▼</span>
       </div>
       <ul id="graduateSub" class="submenu-items hidden">
-        <li><a href="#">졸업기준학점조회</a></li>
+        <li><a href="{% url 'grad_credit_sch' %}">졸업기준학점조회</a></li>
       </ul>
     </li>
 

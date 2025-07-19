@@ -1,0 +1,87 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}졸업기준학점조회{% endblock %}
+
+{% block content %}
+<div class="grad-credit-wrapper">
+
+  <h3 style="color: #1c2a63; margin-bottom: 30px;">■ 졸업기준학점조회</h3>
+
+  <form method="get" class="query-form">
+  <!-- 조회 버튼을 상단에 둠 -->
+  <div class="query-btn-top" style="margin-bottom: 15px;">
+    <button type="submit">조회</button>
+  </div>
+
+  <!-- 나머지 입력 필드 -->
+  <div class="query-row">
+    <div>
+      <label>캠퍼스</label>
+      <input type="text" value="천안" readonly>
+    </div>
+    <div>
+      <label>구분</label>
+      <input type="text" value="학부" readonly>
+    </div>
+    <div>
+      <label>대학</label>
+      <input type="text" value="전체" readonly>
+    </div>
+    <div>
+    <label>학부(과)</label>
+      <input type="text" name="department">
+    </div>
+    <div>
+      <label>학번기준 <span style="color: red;">*</span></label>
+      <input type="number" name="year" value="2025" min="2000" max="2099" step="1">
+    </div>
+  </div>
+</form>
+
+
+  <!-- 졸업기준학점 테이블 -->
+  <div class="table-container">
+    <table class="grad-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>대학</th>
+          <th>소속상세명</th>
+          <th>입학구분</th>
+          <th colspan="3">교양</th>
+          <th colspan="4">전공(단일)</th>
+          <th colspan="3">전공(다전공)</th>
+          <th colspan="2">부전공</th>
+          <th>잔여학점</th>
+        </tr>
+        <!-- 하위 header -->
+        <tr>
+          <th colspan="4"></th>
+          <th>교필</th><th>교선</th><th>계</th>
+          <th>전필</th><th>전심</th><th>전선</th><th>계</th>
+          <th>전필</th><th>전선</th><th>계</th>
+          <th>1전공</th><th>부전공</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 향후 DB 연동 영역 -->
+        {% comment %} 예시 행 {% endcomment %}
+        <tr>
+          <td>1</td>
+          <td>융복합특성화대</td>
+          <td>만화전공</td>
+          <td>일반</td>
+          <td>13</td><td>20</td><td>33</td>
+          <td>15</td><td>45</td><td></td><td>60</td>
+          <td>36</td><td>36</td><td>36</td>
+          <td>21</td><td>37</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

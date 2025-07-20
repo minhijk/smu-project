@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>개인정보 변경</title>
+  <link rel="stylesheet" href="/static/css/profile.css" />
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo">SANGMYUNG 포털</div>
+    <nav class="nav-bar">
+      <a href="#">통합정보</a>
+      <a href="#">전자출결</a>
+      <a href="#">e-Campus</a>
+      <a href="#">e-포트폴리오</a>
+      <a href="#">학술정보관</a>
+    </nav>
+    <div class="user-info">
+      <span>로그아웃</span>
+    </div>
+  </header>
+
+  <aside class="side-menu">
+    <div class="menu-section">마이 페이지</div>
+    <ul>
+      <li><a href="#">개인정보변경</a></li>
+      <li><a href="#">쪽지함</a></li>
+      <li><a href="#">일정관리</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <h2>개인정보 변경</h2>
+    <div class="tab-menu">
+      <button class="active">개인정보</button>
+      <button>비밀번호</button>
+    </div>
+
+    <form method="post" class="profile-form">
+      {% csrf_token %}
+      <table class="profile-table">
+        <tr>
+          <th>학번</th>
+          <td>201921272</td>
+          <th>성명</th>
+          <td>{{ request.user.first_name }}</td>
+        </tr>
+        <tr>
+          <th>휴대폰</th>
+          <td><input type="text" name="phone" /></td>
+          <th>학교 이메일</th>
+          <td>jc******@gmail.com</td>
+        </tr>
+        <tr>
+          <th>주소</th>
+          <td colspan="3"><input type="text" name="address" /></td>
+        </tr>
+      </table>
+      <div class="btn-area">
+        <button type="submit" class="submit-btn">수정하기</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

@@ -26,6 +26,13 @@ INSTALLED_APPS = [
     'accounts',     # 로그인/회원정보 관리용
     'dashboard',    # 메인 포털 UI
     'rest_framework',
+    'smul.academic',
+    'smul.evaluation',
+    'smul.grade',
+    'smul.graduation',
+    'smul.lecture',
+    'smul.registration',
+    'smul.main'
 ]
 
 # 미들웨어

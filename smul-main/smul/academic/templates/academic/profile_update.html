@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}개인정보수정{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+  <h3 style="color: #1c2a63; margin-bottom: 30px;">■ 개인정보수정</h3>
+
+  <!-- 1단: 기본 정보 -->
+  <div class="basic-info">
+    <div class="row">
+      <div><label>학번</label><input type="text" value="202121320" readonly></div>
+      <div><label>성명</label><input type="text" value="이민혁" readonly></div>
+      <div><label>성별</label><input type="text" value="남" readonly></div>
+      <div><label>소속</label><input type="text" value="정보보안공학과" readonly></div>
+      <div><label>지도교수</label><input type="text" value="서창진" readonly></div>
+      <div><label>국적</label><input type="text" value="대한민국" readonly></div>
+      <div><label>전화번호</label><input type="text" value="010-9829-7141" readonly></div>
+      <div><label>이메일</label><input type="text" value="hyeok7141@daum.net" readonly></div>
+    </div>
+  </div>
+
+  <!-- 2단: 입력 정보 -->
+  <div class="edit-form">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row">
+        <div><label>영문 이름</label><input type="text" name="english_name" placeholder="LEE MINHYEOK"></div>
+        <div>
+          <label>은행명</label>
+          <select name="bank_name">
+            <option value="">-- 선택 --</option>
+            <option>KEB하나은행</option>
+            <option>국민은행</option>
+            <option>우리은행</option>
+            <option>신한은행</option>
+          </select>
+        </div>
+        <div><label>계좌번호</label><input type="text" name="account_number"></div>
+        <div><label>예금주</label><input type="text" name="account_holder"></div>
+      </div>
+      <div style="text-align: right; margin-top: 10px;">
+        <button type="submit" class="submit-btn">저장</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

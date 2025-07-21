@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('accounts/api/', include('accounts.api_urls')),  # ✅ 추가!
+    path('smul/', include('smul.urls')),
 ]

@@ -16,84 +16,86 @@ html, body {
   display: flex;
 }
 
-/* 사이드바 */
 .sidebar {
-  width: 200px;
-  height: 100vh;          
-  overflow-y: auto;       
+  width: 140px; /* 더 좁게 */
+  height: 100vh; /* 최소 화면 높이 보장 */
+  overflow-y: auto;  /* 내용이 넘치면 스크롤 */
   background: linear-gradient(to bottom, #062D8F, #071D5B);
   color: white;
   display: flex;
   flex-direction: column;
-  padding: 0;
-  box-sizing: border-box;
   position: fixed;
   left: 0;
   top: 0;
   z-index: 10;
+  align-items: center; /* 중앙 정렬 */
+  padding-top: 40px;
 }
-
-.sidebar-header {
-  padding: 20px;
-  font-size: 1.4em;
+.sidebar-extra {
+  margin-top: 30px;
+  width: 140px;
+}
+.sidebar-header img {
+  width: 50px;
+  margin-bottom: 5px;
+}
+.sidebar-header div {
+  font-size: 0.9em;
   font-weight: bold;
-  text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .menu-item {
-  padding: 15px 20px;
+  padding: 12px 0;
+  width: 100%;
+  text-align: center;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9em;
   transition: background 0.3s;
 }
-
 .menu-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
-
 .menu-item.active {
-  background-color: #1C317D;
+  background-color: #0d3c8f;
   font-weight: bold;
 }
 
 .sidebar-footer {
-  margin-top: auto;
-  padding: 20px;
+  margin-top: 20px;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 20px;
+  align-items: center;
 }
 
 .icon-button {
   width: 40px;
   height: 40px;
-  border: 2px dashed red;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 18px;
-  color: white;
   cursor: pointer;
 }
 
-.language-select {
+.lang {
   color: white;
-  font-size: 0.9em;
-  text-align: center;
+  font-size: 0.75em;
+  margin-bottom: 10px;
 }
+
 
 /* 서브 메뉴 */
 .sub-menu {
   position: fixed;
   top: 0;
-  left: 200px;
+  left: 140px;
   width: 300px;
   height: 100vh;
-  overflow-y: auto;
-  background-color: #0d47a1;
+  overflow-y: auto; /* 추가 */
+  background-color: rgba(13, 71, 161, 0.9);
   color: white;
   padding: 40px 20px;
   box-sizing: border-box;
@@ -105,10 +107,10 @@ html, body {
 .sub-menu.active {
   transform: translateX(0%);
 }
-
 .sub-menu h3 {
-  margin-top: 0;
-  font-size: 1.5em;
+  font-size: 1.4em;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 500;
 }
 
 .sub-menu .close-btn {
@@ -119,6 +121,7 @@ html, body {
   cursor: pointer;
 }
 
+/* 서브 메뉴 안의 검색 input */
 .sub-menu input[type="text"] {
   width: 90%;
   padding: 12px;
@@ -131,6 +134,7 @@ html, body {
   outline: none;
 }
 
+/* 서브 메뉴 키워드 버튼 */
 .sub-menu button,
 .sub-menu .tag-btn {
   background: transparent;
@@ -149,20 +153,13 @@ html, body {
   border: 1px solid rgba(255,255,255,0.8);
 }
 
+/* 메인 콘텐츠 */
 .main-content {
-  margin-left: 200px;
+  margin-left: 160px;
   padding: 40px;
 }
 
-section {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* 캘린더 컨테이너 */
-/* 공통 박스 스타일 */
+/* 캘린더와 공통 박스 스타일 */
 section, .calendar-container {
   background: white;
   padding: 40px;
@@ -171,7 +168,7 @@ section, .calendar-container {
   margin-bottom: 30px;
 }
 
-/* 캘린더 상단 제목 (학사일정 | 학사안내) */
+/* 캘린더 헤더 스타일 */
 .calendar-top-bar {
   display: flex;
   align-items: center;
@@ -182,14 +179,13 @@ section, .calendar-container {
 .calendar-top-bar span {
   margin: 0 10px;
   color: #999;
-  font-weight: normal;
 }
 .calendar-top-bar-line {
   border-bottom: 2px solid #0d47a1;
   margin-bottom: 20px;
 }
 
-/* FullCalendar */
+/* FullCalendar 스타일 */
 #calendar {
   background: white;
   padding: 20px;
@@ -198,12 +194,10 @@ section, .calendar-container {
   max-width: 1000px;
   margin: 20px auto;
 }
-
 .fc .fc-toolbar-title {
   font-size: 1.8em;
   color: #0d47a1;
 }
-
 .fc-button-primary {
   background: #0d47a1;
   border: none;
@@ -294,18 +288,41 @@ section, .calendar-container {
   background: #333;
 }
 
-.nav-arrows .prev, .nav-arrows .next {
-  background: rgba(0,0,0,0.6); /* 더 진한 검정 반투명 배경으로 변경 */
-  color: white; /* 글씨색 흰색으로 명확히 */
-  z-index: 5; /* 이미지보다 위에 오도록 */
-  font-size: 32px;
-  padding: 10px 16px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.3s;
+/*공지사항 쪽 버튼*/
+.tag-button {
+  background: #fff;
+  border: 1px solid #999;
+  color: #333;
 }
 
-.nav-arrows {
-  z-index: 5; /* 혹시 div 자체가 뒤로 가 있을 경우 */
+.tag-button:hover {
+  background: #ced4da;
+}
+
+.tabs {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 20px;
+}
+.tabs li {
+  margin-right: 30px;
+}
+.tabs li a {
+  text-decoration: none;
+  color: #333;
+  padding: 10px 15px;
+  display: block;
+  transition: all 0.2s;
+}
+.tabs li a:hover {
+  border-bottom: 3px solid #999;
+}
+.tabs li.active a {
+  color: #1a1a94;
+  border-bottom: 3px solid #202276;
+  background: #c6c9f1;
 }
 

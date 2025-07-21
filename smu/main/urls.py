@@ -11,4 +11,6 @@ urlpatterns = [
     path('api/academic/calendar',views.calendar_api,name='calendar_api'),
     path('login',views.login,name='login'),
     path('logout/', logout, name='logout'),
+    path('api/notice/filter', views.notice_filter_api, name='notice_filter_api'),
+    path('search/', views.notice_search, name='notice_search'),
 ]

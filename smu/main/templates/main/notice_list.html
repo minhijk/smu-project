@@ -6,15 +6,24 @@
 <h2 style="margin-bottom: 20px;">공지사항 목록</h2>
 
 <form action="/notice/search" method="get" style="margin-top: 30px;">
-   <div style="display: flex; margin: 20px 0;">
+  <div style="display: flex; margin: 20px 0;">
     <input type="text" name="q" value="{{ query }}" placeholder="검색" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: white; color: #333;">
     <button style="background: #99aaff; border: none; padding: 10px 20px; cursor: pointer;">검색</button>
   </div>
 </form>
 
-<ul style="list-style: none; padding: 0; margin: 0;">
+<!-- 탭 영역 -->
+  <ul class="tabs">
+    <li class="active"><a href="#" onclick="loadNotices('all', this); return false;">상명</a></li>
+    <li><a href="#" onclick="loadNotices('seoul', this); return false;">서울</a></li>
+    <li><a href="#" onclick="loadNotices('cheonan', this); return false;">천안</a></li>
+    <li><a href="#" onclick="loadNotices('employment', this); return false;">채용</a></li>
+  </ul>
+
+<!-- 공지 목록 -->
+<ul id="notice-list" style="list-style: none; padding: 0; margin: 0;">
   {% for notice in notices %}
-    <li style="padding: 12px 0; border-bottom: 1px solid #333;">
+    <li class="notice-item" data-category="{{ notice.category }}" style="padding: 12px 0; border-bottom: 1px solid #333;">
       <a href="/notice?id={{ notice.id }}" style="text-decoration: none; color: black; font-size: 1.1em;">
         {{ notice.title }}
       </a>
@@ -26,4 +35,18 @@
     <li style="color: gray;">공지사항이 없습니다.</li>
   {% endfor %}
 </ul>
+
+<script>
+function filterNotices(category) {
+  const items = document.querySelectorAll('.notice-item');
+  items.forEach(item => {
+    const itemCategory = item.dataset.category;
+    if (category === 'all' || itemCategory === category) {
+      item.style.display = '';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+</script>
 {% endblock %}

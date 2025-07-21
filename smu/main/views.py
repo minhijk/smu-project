@@ -74,3 +74,61 @@ def login(request):
 def logout(request):
     django_logout(request)
     return redirect('/')
+
+def notice_filter_api(request):
+    search_query = request.GET.get('q', '')
+    category_name_filter = request.GET.get('category_name', '') 
+
+    notices = Notice.objects.all()
+
+    if category_name_filter:
+        if category_name_filter == 'all':
+            pass
+        else:
+            notices = notices.filter(category__name=category_name_filter)
+    
+    elif search_query:
+        notices = notices.filter(
+            Q(title__icontains=search_query) | Q(content__icontains=search_query)
+        )
+            
+    notices = notices.order_by('-created_at')[:10]
+
+    result = [
+        {
+            'id': n.id,
+            'title': n.title,
+            'author': n.author.username if n.author else 'Unknown', 
+            'created_at': n.created_at.strftime('%Y-%m-%d')
+        }
+        for n in notices
+    ]
+    return JsonResponse(result, safe=False)
+
+def notice_search(request):
+    search_query = request.GET.get('search', '') 
+    category = request.GET.get('category', 'all')  
+    notices = Notice.objects.all()
+
+    if category != 'all':
+        notices = notices.filter(category=category)
+
+    if search_query:
+        notices = notices.filter(
+            Q(title__icontains=search_query) | Q(content__icontains=search_query)
+        )
+
+    notices = notices.order_by('-created_at')
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        data = list(notices.values('id', 'title', 'author__username', 'created_at'))
+        for item in data:
+            item['author'] = item.pop('author__username')
+            item['created_at'] = item['created_at'].strftime('%Y-%m-%d')
+        return JsonResponse(data, safe=False)
+
+    return render(request, 'main/notice_search.html', {
+        'query': search_query,
+        'category': category,
+        'results': notices,
+    })

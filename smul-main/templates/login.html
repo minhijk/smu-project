@@ -1,0 +1,61 @@
+<!-- templates/profile.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>사용자 정보</title>
+</head>
+<body>
+  <h2>내 정보</h2>
+  <form id="userForm">
+    <label>학번(ID): <span id="userId"></span></label><br>
+    <label>이름: <input type="text" id="nameInput" /></label><br>
+    <button type="submit">정보 수정</button>
+  </form>
+
+  <div id="message"></div>
+
+  <script>
+    // 사용자 정보 가져오기
+    fetch('/api/user/')
+      .then(res => {
+        if (!res.ok) throw new Error('로그인 필요');
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById('userId').innerText = data.id;
+        document.getElementById('nameInput').value = data.name;
+      })
+      .catch(err => {
+        alert('로그인되어 있지 않습니다.');
+        window.location.href = '/login/';
+      });
+
+    // 정보 수정하기
+    const form = document.getElementById('userForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newName = document.getElementById('nameInput').value;
+
+      const res = await fetch('/api/user_update/', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCSRFToken() // CSRF 보안 대응
+        },
+        body: JSON.stringify({ name: newName })
+      });
+
+      const result = await res.json();
+      document.getElementById('message').innerText = result.message;
+    });
+
+    // CSRF 토큰 가져오기 (Django의 기본 보안 설정 대응)
+    function getCSRFToken() {
+      const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+      return cookie ? cookie.split('=')[1] : '';
+    }
+  </script>
+</body>
+</html>

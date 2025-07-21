@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>샘물 포털 메인</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+<!-- GNB -->
+<div id="gnb">
+    <div class="logo">SANGMYUNG 포털시스템</div>
+    <ul class="gnb-menu">
+        <li><a href="/smul/">통합정보</a></li>
+        <li>전자출결</li>
+        <li>e-Campus</li>
+        <li>e-포트폴리오</li>
+        <li>학술정보관</li>
+    </ul>
+    <div class="user-info" id="userInfoArea">
+        <a href="/accounts/login/">로그인</a>
+    </div>
+</div>
+
+<!-- 공지사항 -->
+<div id="notice-area">
+    <strong>📢 공지사항</strong>
+    <ul>
+        <li>[학사공지] 2025학년도 하계 계절수업 수강신청 안내</li>
+        <li>[학사공지] 여름학기 공결 안내</li>
+    </ul>
+</div>
+
+<!-- 상단 버튼 -->
+<div id="top-buttons">
+    <button>📁 전공조회</button>
+    <button>📝 성적조회</button>
+    <button>📚 상담현황</button>
+    <button>🎓 수강신청내역</button>
+    <button>🧾 학점취득현황</button>
+    <button>📦 Office365</button>
+</div>
+
+<!-- 대시보드 -->
+<div id="dashboard">
+
+    <div class="portlet">
+        <div class="portlet-header">📊 학점취득현황 <span class="action">+</span></div>
+        <div class="portlet-body">원형 그래프 영역</div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">📢 공지사항 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <ul>
+                <li>[학사공지] 공결 안내</li>
+                <li>[장학공지] 국가장학금 신청</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🕓 강의시간표 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>2025.07.08 (화)</p>
+            <p>등록된 강의가 없습니다.</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">✅ 출결현황 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>2025학년도 출결현황</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">📆 휴보강내역 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>조회된 내용이 없습니다.</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">📈 성적조회 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <ul>
+                <li>시스템소프트웨어: A+</li>
+                <li>이산수학: B+</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🎯 비교과프로그램 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>D-23 진로취업특강</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🏫 열람실 사용현황 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>좌석: 192 / 잔여: 4</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">💬 상담현황 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <ul>
+                <li>진로상담: 0건</li>
+                <li>기타: 0건</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🧾 수강신청내역 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <ul>
+                <li>정보보안개론</li>
+                <li>네트워크보안</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🍱 학교식당 메뉴 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <ul>
+                <li>한식: 김치찌개, 제육볶음</li>
+                <li>양식: 치킨까스</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">📚 신착도서 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>[도서1] 심리의 모든 것</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">📁 SM-CDR 이수현황 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>등록된 CDR 이수 내역이 없습니다.</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🌫️ 오늘의 대기질/날씨 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>미세먼지: 31μg/m³ (좋음)</p>
+            <p>초미세먼지: 5μg/m³ (좋음)</p>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">🧾 나의 교육과정 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <ul>
+                <li>HBL04501 English Foundations</li>
+                <li>HBL04903 알고리즘</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="portlet">
+        <div class="portlet-header">📸 페이스북 <span class="action">+</span></div>
+        <div class="portlet-body">
+            <p>페이스북 사진 영역</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+  fetch('/accounts/api/user/', {
+    credentials: 'include',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('인증 안 됨');
+      return res.json();
+    })
+    .then(data => {
+      document.getElementById('userInfoArea').innerHTML =
+        `${data.first_name} (${data.username}) | 
+         <a href="/accounts/logout/">로그아웃</a> | 
+         <a href="/accounts/profile/">내 정보</a>`;
+    })
+    .catch(() => {
+      document.getElementById('userInfoArea').innerHTML =
+        `<a href="/accounts/login/">로그인</a>`;
+    });
+</script>
+
+</body>
+</html>

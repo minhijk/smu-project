@@ -1,0 +1,96 @@
+<!-- templates/registration/login.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상명대학교 로그인</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: "Malgun Gothic", sans-serif;
+        }
+        .login-container {
+            width: 800px;
+            margin: 80px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            display: flex;
+            padding: 30px;
+        }
+        .login-left {
+            width: 50%;
+            border-right: 1px solid #ccc;
+            padding: 0 20px;
+        }
+        .login-right {
+            width: 50%;
+            padding: 0 20px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+        .btn-login {
+            margin-top: 20px;
+            background: #004aad;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn-login:hover {
+            background: #003b91;
+        }
+        .logo {
+            font-size: 20px;
+            color: #004aad;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <h2>🔒 로그인/로그아웃 유의사항</h2>
+            <ul>
+                <li>학생은 학번으로, 교직원은 교직원번호로 로그인해야 합니다.</li>
+                <li>로그아웃 후 브라우저를 완전히 종료해주세요.</li>
+                <li>Internet Explorer는 지원되지 않습니다.</li>
+            </ul>
+        </div>
+        <div class="login-right">
+            <div class="logo">상명대학교 통합 로그인</div>
+            <form method="post">
+                {% csrf_token %}
+                <label for="id_username">아이디</label>
+                <input type="text" name="username" required id="id_username">
+
+                <label for="id_password">비밀번호</label>
+                <input type="password" name="password" required id="id_password">
+
+                <button type="submit" class="btn-login">로그인</button>
+
+                {% if form.errors %}
+                    <p style="color:red;">아이디 또는 비밀번호가 올바르지 않습니다.</p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</body>
+</html>

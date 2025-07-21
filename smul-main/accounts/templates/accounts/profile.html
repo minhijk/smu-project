@@ -1,0 +1,19 @@
+<!-- templates/accounts/profile.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>개인정보</title>
+    <link rel="stylesheet" href="/static/style.css"> <!-- 필요시 스타일 추가 -->
+</head>
+<body>
+    <h2>개인정보</h2>
+    <ul>
+        <li>학번: {{ user.username }}</li>
+        <li>이름: {{ user.first_name }}</li>
+        <li>이메일: {{ user.email }}</li>
+        <!-- 필요한 다른 필드 추가 -->
+    </ul>
+</body>
+</html>

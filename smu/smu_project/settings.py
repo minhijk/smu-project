@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'main'
+    'main',
+    'login',
+    'PwdResetEmail',
+    'PwdResetSMS',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +125,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'snrntpsy0629@gmail.com'
+EMAIL_HOST_PASSWORD = 'ojft gjqi lmei ppgl'  # ← 16자리 앱 비밀번호
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+SOLAPI_API_KEY = "NCSMGETG1WCSF0OJ"
+SOLAPI_API_SECRET = "B1PQNKWJGUED7HN4ZC4FIFK5QQANUTE6"
+SOLAPI_SENDER = "01099817360"
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379

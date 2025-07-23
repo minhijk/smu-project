@@ -7,38 +7,48 @@
 <div class="profile-wrapper">
   <h3 style="color: #1c2a63; margin-bottom: 30px;">■ 개인정보수정</h3>
 
-  <!-- 1단: 기본 정보 -->
+  <!-- ✅ 상단: 기본 정보 -->
   <div class="basic-info">
     <div class="row">
-      <div><label>학번</label><input type="text" value="202121320" readonly></div>
-      <div><label>성명</label><input type="text" value="이민혁" readonly></div>
-      <div><label>성별</label><input type="text" value="남" readonly></div>
-      <div><label>소속</label><input type="text" value="정보보안공학과" readonly></div>
-      <div><label>지도교수</label><input type="text" value="서창진" readonly></div>
-      <div><label>국적</label><input type="text" value="대한민국" readonly></div>
-      <div><label>전화번호</label><input type="text" value="010-9829-7141" readonly></div>
-      <div><label>이메일</label><input type="text" value="hyeok7141@daum.net" readonly></div>
+      <div><label>학번</label><input type="text" id="student_id" readonly></div>
+      <div><label>성명</label><input type="text" id="name" readonly></div>
+      <div><label>성별</label><input type="text" id="gender" readonly></div>
+      <div><label>소속</label><input type="text" id="department" readonly></div>
+      <div><label>지도교수</label><input type="text" id="professor" readonly></div>
+      <div><label>국적</label><input type="text" id="nationality" readonly></div>
+      <div><label>전화번호</label><input type="text" id="phone" readonly></div>
+      <div><label>이메일</label><input type="text" id="email" readonly></div>
     </div>
   </div>
 
-  <!-- 2단: 입력 정보 -->
+  <!-- ✅ 하단: 수정 가능 항목 -->
   <div class="edit-form">
-    <form method="post">
+    <form onsubmit="saveProfile(event)">
       {% csrf_token %}
       <div class="row">
-        <div><label>영문 이름</label><input type="text" name="english_name" placeholder="LEE MINHYEOK"></div>
+        <div>
+          <label>영문 이름</label>
+          <input type="text" id="eng_name">
+        </div>
         <div>
           <label>은행명</label>
-          <select name="bank_name">
+          <select id="bank">
             <option value="">-- 선택 --</option>
-            <option>KEB하나은행</option>
-            <option>국민은행</option>
-            <option>우리은행</option>
-            <option>신한은행</option>
+            <option value="KEB하나은행">KEB하나은행</option>
+            <option value="KB국민은행">KB국민은행</option>
+            <option value="우리은행">우리은행</option>
+            <option value="신한은행">신한은행</option>
+            <option value="토스뱅크">토스뱅크</option>
           </select>
         </div>
-        <div><label>계좌번호</label><input type="text" name="account_number"></div>
-        <div><label>예금주</label><input type="text" name="account_holder"></div>
+        <div>
+          <label>계좌번호</label>
+          <input type="text" id="account_number">
+        </div>
+        <div>
+          <label>예금주</label>
+          <input type="text" id="account_holder">
+        </div>
       </div>
       <div style="text-align: right; margin-top: 10px;">
         <button type="submit" class="submit-btn">저장</button>
@@ -46,4 +56,92 @@
     </form>
   </div>
 </div>
+
+<!-- ✅ JS 영역 -->
+<script>
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+window.onload = function () {
+  fetch('/api/academic/user-info/', {
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) return alert(data.error);
+
+    // 상단 readonly 정보 출력
+    document.getElementById('student_id').value = data.student_id || '';
+    document.getElementById('name').value = data.name || '';
+    document.getElementById('gender').value = data.gender || '';
+    document.getElementById('department').value = data.department || '';
+    document.getElementById('professor').value = data.professor || '';
+    document.getElementById('nationality').value = data.nationality || '';
+    document.getElementById('phone').value = data.phone || '';
+    document.getElementById('email').value = data.email || '';
+
+    // 수정가능 항목 출력
+    document.getElementById('eng_name').value = data.eng_name || '';
+    document.getElementById('account_number').value = data.account_number || '';
+    document.getElementById('account_holder').value = data.account_holder || '';
+
+    // 은행명 selectbox 반영
+    if (data.bank) {
+      const bankSelect = document.getElementById('bank');
+      for (let i = 0; i < bankSelect.options.length; i++) {
+        if (bankSelect.options[i].value === data.bank) {
+          bankSelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  });
+}
+
+function saveProfile(event) {
+  event.preventDefault();
+
+  const body = {
+    eng_name: document.getElementById('eng_name').value,
+    bank: document.getElementById('bank').value,
+    account_number: document.getElementById('account_number').value,
+    account_holder: document.getElementById('account_holder').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+  };
+
+  fetch('/api/academic/user-update/', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    credentials: 'include',
+    body: JSON.stringify(body)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'updated') {
+      alert("수정이 완료되었습니다.");
+    } else {
+      alert("오류: " + data.error);
+    }
+  })
+  .catch(error => {
+    alert("요청 실패: " + error);
+  });
+}
+</script>
 {% endblock %}

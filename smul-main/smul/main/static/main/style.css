@@ -15,11 +15,27 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
+  justify-content: space-between; /* 사용자 이름 오른쪽 정렬 */
   z-index: 2000;
   position: fixed;
   top: 0;
   left: 0;
   height: 50px;
+}
+
+.banner-title {
+  flex: 1;
+}
+
+.banner-user {
+  padding-right: 300px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: normal;
+  margin-right: 10px;
+  padding: 0 10px;
 }
 
 /* 왼쪽 고정 메뉴 */

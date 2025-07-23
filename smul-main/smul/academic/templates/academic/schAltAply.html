@@ -3,32 +3,30 @@
 
 {% block content %}
 <div class="leave-wrapper">
-
   <h3 style="color: #1c2a63; margin-bottom: 20px;">■ 휴학/복학/자퇴 신청</h3>
 
-  <!-- 학생 기본 정보 -->
+  <!-- 학생 기본 정보 (자동 입력) -->
   <div class="student-info">
     <div class="row">
-      <div><label>학번</label><input type="text" value="2021212320" readonly></div>
-      <div><label>성명</label><input type="text" value="이민혁" readonly></div>
-      <div><label>성별</label><input type="text" value="남" readonly></div>
-      <div><label>학년</label><input type="text" value="3학년" readonly></div>
-      <div><label>소속</label><input type="text" value="정보보안학과" readonly></div>
-      <div><label>지도교수</label><input type="text" value="서창진" readonly></div>
-      <div><label>국적</label><input type="text" value="대한민국" readonly></div>
-      <div><label>전화번호</label><input type="text" value="010-1234-5678" readonly></div>
-      <div><label>이메일</label><input type="text" value="hyeok7141@daum.net" readonly></div>
+      <div><label>학번</label><input type="text" id="student_id" readonly></div>
+      <div><label>성명</label><input type="text" id="name" readonly></div>
+      <div><label>성별</label><input type="text" id="gender" readonly></div>
+      <div><label>소속</label><input type="text" id="department" readonly></div>
+      <div><label>지도교수</label><input type="text" id="professor" readonly></div>
+      <div><label>국적</label><input type="text" id="nationality" readonly></div>
+      <div><label>전화번호</label><input type="text" id="phone" readonly></div>
+      <div><label>이메일</label><input type="text" id="email" readonly></div>
     </div>
   </div>
 
   <!-- 신청 폼 -->
   <div class="request-section">
-    <form method="post" enctype="multipart/form-data">
+    <form id="leaveForm" enctype="multipart/form-data" onsubmit="submitLeave(event)">
       {% csrf_token %}
       <div class="row">
         <div class="full">
           <label>신청 구분</label>
-          <select name="request_type" required>
+          <select id="status" name="status" required>
             <option value="">-- 선택하세요 --</option>
             <option value="휴학">휴학</option>
             <option value="복학">복학</option>
@@ -40,8 +38,8 @@
       <div class="row">
         <div class="full">
           <label>신청 관련 서류 첨부</label>
-          <input type="file" name="attachment">
-          <p class="hint">※ 입영통지서 첨부 필수</p>
+          <input type="file" id="document" name="document" required>
+          <p class="hint">※ 입영통지서 등 첨부 필수</p>
         </div>
       </div>
 
@@ -49,4 +47,65 @@
     </form>
   </div>
 </div>
+
+<!-- ✅ JS: 사용자 정보 불러오기 + 신청 제출 -->
+<script>
+function getCookie(name) {
+  const cookies = document.cookie.split(';');
+  for (const c of cookies) {
+    const [k, v] = c.trim().split('=');
+    if (k === name) return decodeURIComponent(v);
+  }
+  return null;
+}
+
+window.onload = function () {
+  fetch('/api/academic/user-info/', {
+    credentials: 'include'
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+    document.getElementById('student_id').value = data.student_id;
+    document.getElementById('name').value = data.name;
+    document.getElementById('gender').value = data.gender;
+    document.getElementById('department').value = data.department;
+    document.getElementById('professor').value = data.professor;
+    document.getElementById('nationality').value = data.nationality;
+    document.getElementById('phone').value = data.phone;
+    document.getElementById('email').value = data.email;
+  });
+}
+
+function submitLeave(event) {
+  event.preventDefault();
+
+  const form = document.getElementById('leaveForm');
+  const formData = new FormData(form);
+  formData.append('student_id', document.getElementById('student_id').value);
+  formData.append('name', document.getElementById('name').value);
+
+  fetch('/api/academic/apply-leave/', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === '신청 완료') {
+      alert('신청이 완료되었습니다.');
+      form.reset();
+    } else {
+      alert('오류: ' + data.error);
+    }
+  })
+  .catch(err => alert('전송 오류: ' + err));
+}
+</script>
 {% endblock %}

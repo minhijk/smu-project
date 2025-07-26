@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'smul.grade',
     'smul.graduation',
     'smul.lecture',
-    'smul.registration',
     'smul.main'
 ]
 

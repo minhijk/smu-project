@@ -150,7 +150,7 @@ body {
 .leave-wrapper {
   font-family: 'Malgun Gothic', sans-serif;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #fefefe;
 }
 
 .leave-wrapper .student-info,
@@ -212,6 +212,11 @@ body {
 .leave-wrapper .submit-btn:hover {
   background-color: #16234f;
 }
+
+.leave-wrapper input[readonly] {
+  background-color: #f5f5f5;  /* 회색 배경 */
+}
+
 
 /* ===== 개인정보수정 페이지 전용 스타일 ===== */
 .profile-wrapper {
@@ -310,4 +315,174 @@ body {
 
 .grad-credit-wrapper .grad-table thead {
   background-color: #f0f0f0;
+}
+
+/* 수강신청 페이지 상단 입력 영역 (샘물 스타일 대응) */
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.student-info label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #1c2a63;
+  white-space: nowrap;
+}
+
+.student-info input {
+  padding: 5px 10px;
+  font-size: 14px;
+  width: 180px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+/* ===== 수강신청현황 페이지 전용 스타일 ===== */
+.enrollment-wrapper {
+  margin: 30px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.enrollment-title {
+  color: #1c2a63;
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.enrollment-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+  table-layout: fixed;
+}
+
+.enrollment-table th,
+.enrollment-table td {
+  border: 1px solid #cfcfcf;
+  padding: 10px 12px;
+}
+
+.enrollment-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.enrollment-table tr:hover {
+  background-color: #eef2ff;
+}
+
+
+/* ===== 전체성적조회 페이지 전용 스타일 ===== */
+.grade-wrapper {
+  margin: 30px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.grade-title {
+  color: #1c2a63;
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.grade-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: center;
+  table-layout: fixed;
+}
+
+.grade-table th,
+.grade-table td {
+  border: 1px solid #cfcfcf;
+  padding: 10px 12px;
+  word-wrap: break-word;
+}
+
+.grade-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.grade-table tr:hover {
+  background-color: #eef2ff;
+}
+
+/* ===== 강의평가 작성 페이지 전용 스타일 ===== */
+.evaluation-wrapper {
+  margin: 30px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.evaluation-wrapper h3 {
+  color: #1c2a63;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.evaluation-wrapper .lecture-info {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.evaluation-wrapper label {
+  font-weight: bold;
+  display: block;
+  margin: 10px 0 5px;
+  color: #333;
+}
+
+.evaluation-wrapper input[type="number"],
+.evaluation-wrapper textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fefefe;
+}
+
+.evaluation-wrapper textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.evaluation-wrapper .button-row {
+  margin-top: 20px;
+}
+
+.evaluation-wrapper .submit-btn {
+  padding: 8px 20px;
+  background-color: #1c2a63;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.evaluation-wrapper .submit-btn:hover {
+  background-color: #16234f;
+}
+
+.evaluation-wrapper .back-link {
+  margin-left: 15px;
+  font-size: 14px;
+  color: #1c2a63;
+  text-decoration: underline;
 }

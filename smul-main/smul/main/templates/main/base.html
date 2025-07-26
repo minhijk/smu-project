@@ -46,8 +46,8 @@
         수업정보 <span class="arrow">▼</span>
       </div>
       <ul id="classSub" class="submenu-items hidden">
-        <li><a href="#">강좌및수업계획서조회</a></li>
-        <li><a href="#">수강신청현황표</a></li>
+       
+        <li><a href="{% url 'enrollment_page' %}">수강신청현황표</a></li>
       </ul>
     </li>
 
@@ -82,18 +82,6 @@
         <li><a href="{% url 'grad_credit_sch' %}">졸업기준학점조회</a></li>
       </ul>
     </li>
-
-    <!-- 등록 -->
-    <li>
-      <div class="submenu-title" onclick="toggleSubMenu('registerSub')">
-        등록정보 <span class="arrow">▼</span>
-      </div>
-      <ul id="registerSub" class="submenu-items hidden">
-        <li><a href="#">등록조회(고지서 출력)</a></li>
-      </ul>
-    </li>
-
-  </ul>
 </div>
 
 <script>

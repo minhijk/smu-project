@@ -9,7 +9,16 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/api/', include('accounts.api_urls')),  # ✅ 추가!
     path('smul/', include('smul.urls')),
+    path('academic/', include('smul.academic.urls')),
     path('api/academic/',include('smul.academic.api_urls')),
+    path('lecture/', include('smul.lecture.urls')),
+    path('api/lecture/', include('smul.lecture.api_urls')),
+    path('grade/', include('smul.grade.urls')),
+    path('api/grade/', include('smul.grade.api_urls')),
+    path('evaluation/', include('smul.evaluation.urls')),            
+    path('api/evaluation/', include('smul.evaluation.api_urls')),    
+    path('graduation/', include('smul.graduation.urls')),            
+    path('api/graduation/', include('smul.graduation.api_urls')),
 ]
 
 # 개발 환경에서 media 파일 서빙

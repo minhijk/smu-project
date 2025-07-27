@@ -1,0 +1,138 @@
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #f0f2f5;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.reset-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 40px 20px 20px;
+  text-align: center;
+}
+
+.logo {
+  height: 80px;
+  margin-bottom: 30px;
+}
+
+.title-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.title-area h2 {
+  color: #0d47a1;
+  font-size: 26px;
+  margin: 0;
+}
+
+.lock-icon {
+  font-size: 26px;
+  color: #0d47a1;
+}
+
+.instruction {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 35px;
+  line-height: 1.8;
+  max-width: 600px;
+}
+
+.btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.btn-group button {
+  background: #003da5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 16px 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.btn-group button:hover {
+  background: #002f7c;
+}
+
+.back-btn {
+  background: #90a4ae;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 14px 0;
+  width: 100%;
+  max-width: 480px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #78909c;
+}
+
+.form-input {
+  width: 400px;
+  padding: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.code-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.code-input {
+  width: 300px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.code-btn {
+  padding: 8px 12px;
+  background-color: #003da5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.wide-btn {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 15px;
+  background-color: #003da5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.wide-btn.back {
+  background-color: #90a4ae;
+}

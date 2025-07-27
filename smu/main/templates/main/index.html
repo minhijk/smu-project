@@ -36,28 +36,27 @@
     <h2 style="font-size: 2em; line-height: 1.5;">그대, 상명을 원천으로<br>세상에 솟는 샘물 되어라.</h2>
       <form action="/notice/search" method="get" style="margin-top: 30px;">
       <div style="display: flex; margin: 20px 0;">
-          <input type="text" name="q" value="{{ query }}" placeholder="검색" style="flex: 1; padding: 10px; border: none; background: #f2f2f2; color: #333;">
+          <input type="text" name="search" value="{{ query }}" placeholder="검색" style="flex: 1; padding: 10px; border: none; background: #f2f2f2; color: #333;">
           <button style="background: #5e7dbf; border: none; padding: 10px 20px; cursor: pointer;">검색</button>
       </div>
       </form>
-      <div style="margin-top: 20px;">
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">취업</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">장학</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">창업</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">수강</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">성적</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">국제</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">학사운영</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">상생</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">행사</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">공모</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">교양</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">교환학생</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">근로</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">비교과</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">ecampus</button>
-      <button style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">계절수업</button>
-      <!-- 필요에 따라 삭제 -->
+    <div style="margin-top: 20px;">
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">취업</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">장학</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">창업</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">수강</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">성적</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">국제</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">학사운영</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">상생</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">행사</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">공모</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">교양</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">교환학생</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">근로</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">비교과</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">ecampus</button>
+      <button onclick="searchByCategory(this)" style="margin:5px; padding:6px 14px; border:1px solid #999; border-radius:20px; background:#fff; cursor:pointer;">계절수업</button>
     </div>
   </div>
 

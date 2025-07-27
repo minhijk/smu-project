@@ -4,47 +4,38 @@ function openSubMenu(key) {
   const content = document.getElementById('subMenuContent');
 
   const data = {
-    'intro': { title: '상명소개', content: '서브 메뉴' },
-    'admission': { title: '입학안내', content: '서브 메뉴' },
-    'college': { title: '대학 · 대학원', content: '서브 메뉴' },
-    'research': { title: '연구 · 산학', content: '서브 메뉴' },
-    'academic': { 
-      title: '학사안내', 
-      contents: [
-        { text: '통합 공지', link: '/noticelist' },
-        { text: '학사 일정', link: '/academic/calendar' }
-      ] 
-    },
-    'life': { title: '대학생활', content: '서브 메뉴' },
-    'course': { title: '수강신청', content: '서브 메뉴' },
-    'login': { title: '로그인', content: '통합 로그인 연결' },
-    'favorites': { title: '자주 사용하는 메뉴', content: '즐겨찾는 메뉴' },
+    'intro': { title: '상명소개', content: '연혁'},
+    'admission': { title: '입학안내', content: '대학 입학' },
+    'college': { title: '대학 · 대학원', content: '대학 소개' },
+    'research': { title: '연구 · 산학', content: '연구 협력 기관' },
+    'academic': { title: '학사안내',content: '학사 일정', link: '/academic/calendar'},
+    'life': { title: '대학생활', content: '통합 공지',link: '/noticelist'},
+    'course': { title: '수강신청', content: '수강 신청 페이지' },
     'search': { 
-    title: '검색',  // 위에 "검색" 텍스트 없게
-    content: `
-      <input type='text' placeholder='검색'>
-      <div style='margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;'>
-        <button class="tag-btn">취업</button>
-        <button class="tag-btn">장학</button>
-        <button class="tag-btn">창업</button>
-        <button class="tag-btn">수강</button>
-        <button class="tag-btn">성적</button>
-        <button class="tag-btn">상생</button>
-        <button class="tag-btn">학사운영</button>
-        <button class="tag-btn">행사</button>
-        <button class="tag-btn">국제</button>
-        <button class="tag-btn">교양</button>
-        <button class="tag-btn">교환학생</button>
-        <button class="tag-btn">근로</button>
-        <button class="tag-btn">ecampus</button>
-        <button class="tag-btn">계절수업</button>
-        <button class="tag-btn">비교과</button>
-        <button class="tag-btn">상담</button>
-      </div>
-    `
-  },
-
-  'favorites': {
+      title: '', 
+      content: `
+        <input type='text' placeholder='검색'>
+        <div style='margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;'>
+          <button class="tag-btn">취업</button>
+          <button class="tag-btn">장학</button>
+          <button class="tag-btn">창업</button>
+          <button class="tag-btn">수강</button>
+          <button class="tag-btn">성적</button>
+          <button class="tag-btn">상생</button>
+          <button class="tag-btn">학사운영</button>
+          <button class="tag-btn">행사</button>
+          <button class="tag-btn">국제</button>
+          <button class="tag-btn">교양</button>
+          <button class="tag-btn">교환학생</button>
+          <button class="tag-btn">근로</button>
+          <button class="tag-btn">ecampus</button>
+          <button class="tag-btn">계절수업</button>
+          <button class="tag-btn">비교과</button>
+          <button class="tag-btn">상담</button>
+        </div>
+      `
+    },
+    'favorites': {
     title: '자주 사용하는 메뉴',
     content: `
       <div style='display:flex; flex-direction:column; align-items:center; gap:30px;'>
@@ -89,23 +80,44 @@ function openSubMenu(key) {
       </div>
     `
   }
+    // ... 다른 메뉴 생략
   };
 
   const item = data[key];
 
-  title.innerText = item?.title || '메뉴';
+  title.innerText = (key === 'search') ? '' : (item?.title || '메뉴');
 
-  if (item?.contents && Array.isArray(item.contents)) {
-    content.innerHTML = item.contents.map(c => 
-        `<a href="${c.link}" style="display:block; text-decoration:none; margin:5px 0;">${c.text}</a>`
-      ).join('');
-    } else if (item?.link) {
-      content.innerHTML = `<a href="${item.link}" style="text-decoration: none; color: inherit;">${item.content}</a>`;
-    } else {
-      content.innerHTML = item?.content || '선택된 메뉴에 대한 설명이 없습니다.';
+  if (item?.link) {
+    content.innerHTML = `<a href="${item.link}" style="text-decoration: none; color: inherit;">${item.content}</a>`;
+  } else {
+    content.innerHTML = item?.content || '선택된 메뉴에 대한 설명이 없습니다.';
   }
 
   subMenu.classList.add('active');
+
+  if (key === 'search') {
+    setTimeout(() => {
+      document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const tag = encodeURIComponent(this.textContent.trim());
+          window.location.href = '/notice/search?q=' + tag;
+        });
+      });
+
+      const input = document.querySelector('#subMenuContent input[type="text"]');
+      if (input) {
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = encodeURIComponent(this.value.trim());
+            if (query) {
+              window.location.href = '/notice/search?search=' + query;
+            }
+          }
+        });
+      }
+    }, 0);
+  }
 }
 
 function closeSubMenu() {
@@ -131,21 +143,21 @@ function showSlide(n) {
   currentSlide = n;
 }
 
-function handleMenuClick(key, event) {
-  if (key === 'login') {
-    if (window.isLoggedIn === "true") {
-      // 로그아웃 처리
-      window.location.href = '/logout';
-    } else {
-      // 로그인 새 창 열기
-      window.open('/login', '_blank');
-    }
-  } else if (key === 'logout') {
-    window.location.href = '/logout';
-  } else {
-    openSubMenu(key, event);
-  }
-}
+document.querySelector('.prev').addEventListener('click', () => {
+  let newIndex = (currentSlide - 1 + totalSlides) % totalSlides;
+  showSlide(newIndex);
+});
+
+document.querySelector('.next').addEventListener('click', () => {
+  let newIndex = (currentSlide + 1) % totalSlides;
+  showSlide(newIndex);
+});
+
+dots.forEach((dot, idx) => {
+  dot.addEventListener('click', () => {
+    showSlide(idx);
+  });
+});
 
 function loadNotices(category, tabElement) {
   document.querySelectorAll('.tabs li').forEach(li => li.classList.remove('active'));
@@ -191,23 +203,11 @@ function loadNotices(category, tabElement) {
   });
 }
 
-
-
-document.querySelector('.prev').addEventListener('click', () => {
-  let newIndex = (currentSlide - 1 + totalSlides) % totalSlides;
-  showSlide(newIndex);
-});
-
-document.querySelector('.next').addEventListener('click', () => {
-  let newIndex = (currentSlide + 1) % totalSlides;
-  showSlide(newIndex);
-});
-
-dots.forEach((dot, idx) => {
-  dot.addEventListener('click', () => {
-    showSlide(idx);
-  });
-});
+function searchByCategory(button) {
+    const category = button.textContent.trim();
+    const query = encodeURIComponent(category);
+    window.location.href = `/notice/search?search=${query}`;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const loginMenu = document.querySelector('.menu-item[data-key="login"]');
@@ -225,7 +225,12 @@ document.addEventListener('DOMContentLoaded', () => {
       loginMenu.removeAttribute('onclick');
       loginMenu.addEventListener('click', (e) => {
         e.preventDefault();
-        window.open('/login', '_blank');
+        // ✅ 팝업창으로 로그인 띄우기
+        window.open(
+          '/login/',
+          'loginPopup',
+          'width=480,height=600,resizable=no,scrollbars=no'
+        );
       });
     }
   }
@@ -235,9 +240,10 @@ document.addEventListener('click', function(event) {
   const subMenu = document.getElementById('subMenu');
   const sidebar = document.querySelector('.sidebar');
 
-  if (subMenu.classList.contains('active')) {
+  if (subMenu && subMenu.classList.contains('active')) {
     if (!subMenu.contains(event.target) && !sidebar.contains(event.target)) {
       closeSubMenu();
     }
   }
 });
+

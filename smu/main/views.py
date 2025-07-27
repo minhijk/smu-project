@@ -1,10 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth import logout as django_logout
 from .models import Notice, Calendar
-from django.contrib import messages
 
 def home(request):
     notices = Notice.objects.order_by('-created_at')[:5]
@@ -20,17 +17,31 @@ def notice_list(request):
     return render(request, 'main/notice_list.html', {'notices': notices})
 
 def notice_search(request):
-    query = request.GET.get('q', '')
-    results = []
+    search_query = request.GET.get('search', '') 
+    category = request.GET.get('category', 'all')  
+    notices = Notice.objects.all()
 
-    if query:
-        results = Notice.objects.filter(
-            Q(title__icontains=query) | Q(content__icontains=query)
+    if category != 'all':
+        notices = notices.filter(category=category)
+
+    if search_query:
+        notices = notices.filter(
+            Q(title__icontains=search_query) | Q(content__icontains=search_query)
         )
 
+    notices = notices.order_by('-created_at')
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        data = list(notices.values('id', 'title', 'author__username', 'created_at'))
+        for item in data:
+            item['author'] = item.pop('author__username')
+            item['created_at'] = item['created_at'].strftime('%Y-%m-%d')
+        return JsonResponse(data, safe=False)
+
     return render(request, 'main/notice_search.html', {
-        'query': query,
-        'results': results,
+        'query': search_query,
+        'category': category,
+        'results': notices,
     })
 
 def academic_calendar(request):
@@ -56,6 +67,11 @@ def calendar_api(request):
         })
     return JsonResponse(data, safe=False)
 
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login as auth_login, logout as django_logout
+from django.contrib import messages
+from django.http import HttpResponse
+
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -65,11 +81,16 @@ def login(request):
 
         if user is not None:
             auth_login(request, user)
-            return redirect('home') 
+            return HttpResponse("""
+                <script>
+                    opener.location.reload();  // 메인 창 새로고침
+                    window.close();            // 팝업창 닫기
+                </script>
+            """)
         else:
             messages.error(request, '아이디 또는 비밀번호가 올바르지 않습니다.')
 
-    return render(request, 'main/login/login.html')
+    return render(request, 'login/templates/login/login.html')  # 주의: 경로는 'login/login.html'
 
 def logout(request):
     django_logout(request)
@@ -104,31 +125,3 @@ def notice_filter_api(request):
         for n in notices
     ]
     return JsonResponse(result, safe=False)
-
-def notice_search(request):
-    search_query = request.GET.get('search', '') 
-    category = request.GET.get('category', 'all')  
-    notices = Notice.objects.all()
-
-    if category != 'all':
-        notices = notices.filter(category=category)
-
-    if search_query:
-        notices = notices.filter(
-            Q(title__icontains=search_query) | Q(content__icontains=search_query)
-        )
-
-    notices = notices.order_by('-created_at')
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        data = list(notices.values('id', 'title', 'author__username', 'created_at'))
-        for item in data:
-            item['author'] = item.pop('author__username')
-            item['created_at'] = item['created_at'].strftime('%Y-%m-%d')
-        return JsonResponse(data, safe=False)
-
-    return render(request, 'main/notice_search.html', {
-        'query': search_query,
-        'category': category,
-        'results': notices,
-    })

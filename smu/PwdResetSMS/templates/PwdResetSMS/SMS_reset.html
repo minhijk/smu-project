@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>비밀번호 초기화</title>
+  <link rel="stylesheet" href="{% static 'PwdResetSMS/SMS_reset.css' %}">
+</head>
+<body>
+  <div class="reset-wrapper">
+    <a href="/login">
+      <img src="{% static 'PwdResetSMS/sso_logo.png' %}" alt="샘물 통합 로그인" class="logo">
+    </a>
+
+    <div class="title-area">
+      <div class="lock-icon">🔒</div>
+      <h2>비밀번호 초기화</h2>
+    </div>
+
+    <p class="instruction">
+      학번/교직원번호, 성명을 입력 후 [인증번호 발송]을 눌러주시기 바랍니다.<br>
+      학교에 등록된 이메일주소로 인증번호 6자리가 전송됩니다.<br>
+      메세지로 전송된 인증번호 6자리를 입력 후 [확인]을 눌러주시기 바랍니다.
+    </p>
+
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+  <h3 style="text-align: left; font-size: 20px; margin-bottom: 20px; color: #003da5;">메세지(SMS)</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="student_id" placeholder="학번/교직원번호" class="form-input"><br>
+    <input type="text" name="name" placeholder="성명" class="form-input"><br>
+
+    <div class="code-row">
+      <input type="text" name="code" placeholder="인증번호 6자리" class="code-input">
+      <button type="submit" name="action" value="send" class="code-btn">인증번호 발송</button>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" name="action" value="confirm" class="wide-btn">확인</button>
+      <button type="button" onclick="location.href='/login/reset'" class="wide-btn back">돌아가기</button>
+    </div>
+  </form>
+
+  </div>
+</body>
+</html>

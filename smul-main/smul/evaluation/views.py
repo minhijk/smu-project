@@ -1,67 +1,73 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from smul.lecture.models import userLecture
+from .models import EvalResult
 
 
-# 🔹 임시 강의 더미 데이터 (나중엔 DB 연결 예정)
-DUMMY_LECTURES = [
-    {"id": 1, "code": "HBJQ001-1", "title": "정보보안", "professor": "교수1", "credit": 3, "feedback": None},
-    {"id": 2, "code": "HBJQ002-2", "title": "네트워크", "professor": "교수2", "credit": 3, "feedback": "좋아요"},
-    {"id": 3, "code": "HBJQ003-3", "title": "DB", "professor": "교수3", "credit": 3, "feedback": None},
-]
+def get_lecture_list_with_status(student_id, eval_type):
+    lectures = userLecture.objects.filter(student_id=student_id)
+    result = []
+
+    for lec in lectures:
+        submitted = EvalResult.objects.filter(
+            student_id=student_id,
+            course_code=lec.course_code,
+            eval_type=eval_type
+        ).exists()
+
+        result.append({
+            'id': lec.id,
+            'course_code': lec.course_code,
+            'course_name': lec.course_name,
+            'professor': lec.professor,
+            'credit': lec.credit,
+            'is_submitted': submitted
+        })
+    return result
 
 
-DUMMY_LECTURES1 = [
-    {"id": 1, "code": "HBJQ001-1", "title": "정보보안", "professor": "교수1", "credit": 3, "feedback": None},
-    {"id": 2, "code": "HBJQ002-2", "title": "네트워크", "professor": "교수2", "credit": 3, "feedback": "좋아요"},
-    {"id": 3, "code": "HBJQ003-3", "title": "DB", "professor": "교수3", "credit": 3, "feedback": None},
-]
-
+@login_required
 def mid_evaluation(request):
-    # ✅ 나중엔 DB에서 filter(user=..., semester=...) 로 변경
-    lectures = DUMMY_LECTURES
-    return render(request, 'evaluation/mid_evaluation.html', {'lectures': lectures})
+    student_id = request.user.username
+    lecture_list = get_lecture_list_with_status(student_id, 'mid')
+    return render(request, 'evaluation/mid_evaluation.html', {'lectures': lecture_list})
 
 
+@login_required
+def final_evaluation(request):
+    student_id = request.user.username
+    lecture_list = get_lecture_list_with_status(student_id, 'final')
+    return render(request, 'evaluation/final_evaluation.html', {'lectures': lecture_list})
+
+
+@login_required
 @require_http_methods(["GET", "POST"])
 def mid_eval_form(request, lecture_id):
-    # ✅ 나중엔 Lecture.objects.get(id=lecture_id) 로 변경
-    lecture = next((lec for lec in DUMMY_LECTURES if lec["id"] == lecture_id), None)
-
-    if not lecture:
-        return render(request, '404.html')
-
-    if request.method == "POST":
-        score = request.POST.get('score')
-        comment = request.POST.get('comment')
-
-        print(f"[DEBUG] 평가 저장 예정: {lecture['code']}, 평점={score}, 코멘트={comment}")
-
-        # TODO: DB 저장 로직 자리
-        return redirect('mid_evaluation')
-
-    return render(request, 'evaluation/mid_eval_form.html', {'lecture': lecture})
+    return handle_eval_form(request, lecture_id, 'mid', 'mid_evaluation', 'evaluation/mid_eval_form.html')
 
 
-def final_evaluation(request):
-    # ✅ 나중엔 DB에서 filter(user=..., semester=...) 로 변경
-    lectures = DUMMY_LECTURES1
-    return render(request, 'evaluation/final_evaluation.html', {'lectures': lectures})
-
+@login_required
 @require_http_methods(["GET", "POST"])
 def final_eval_form(request, lecture_id):
-    # ✅ 나중엔 Lecture.objects.get(id=lecture_id) 로 변경
-    lecture = next((lec for lec in DUMMY_LECTURES1 if lec["id"] == lecture_id), None)
+    return handle_eval_form(request, lecture_id, 'final', 'final_evaluation', 'evaluation/final_eval_form.html')
 
-    if not lecture:
-        return render(request, '404.html')
+
+def handle_eval_form(request, lecture_id, eval_type, redirect_view_name, template_name):
+    lecture = get_object_or_404(userLecture, id=lecture_id, student_id=request.user.username)
 
     if request.method == "POST":
         score = request.POST.get('score')
         comment = request.POST.get('comment')
 
-        print(f"[DEBUG] 평가 저장 예정: {lecture['code']}, 평점={score}, 코멘트={comment}")
+        EvalResult.objects.create(
+            student_id=request.user.username,
+            course_code=lecture.course_code,
+            eval_type=eval_type,
+            score=score,
+            comment=comment,
+        )
 
-        # TODO: DB 저장 로직 자리
-        return redirect('final_evaluation')
+        return redirect(redirect_view_name)
 
-    return render(request, 'evaluation/final_eval_form.html', {'lecture': lecture})
+    return render(request, template_name, {'lecture': lecture})

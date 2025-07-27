@@ -1,23 +1,69 @@
 {% extends 'main/base.html' %}
 {% block content %}
 
-<h3 style="color: #1c2a63;">■ 중간강의평가 작성</h3>
+<div class="evaluation-wrapper">
+  <h3>■ 중간강의평가 작성</h3>
 
-<p><strong>교과목명:</strong> {{ lecture.title }}</p>
-<p><strong>학수번호-분반:</strong> {{ lecture.code }}</p>
-<p><strong>담당교수:</strong> {{ lecture.professor }}</p>
+  <div class="lecture-info">
+    <p><strong>교과목명:</strong> {{ lecture.course_name }}</p>
+    <p><strong>학수번호-분반:</strong> {{ lecture.course_code }}</p>
+    <p><strong>담당교수:</strong> {{ lecture.professor }}</p>
+  </div>
 
-<hr>
+  <form id="evalForm">
+    <label for="score">평점 (1~5)</label>
+    <input type="number" name="score" id="score" min="1" max="5" required>
 
-<form method="post">
-  {% csrf_token %}
-  <label>평점 (1~5):</label><br>
-  <input type="number" name="score" min="1" max="5" required><br><br>
+    <label for="comment">한줄평</label>
+    <textarea name="comment" id="comment" placeholder="자유롭게 작성해주세요."></textarea>
 
-  <label>한줄평:</label><br>
-  <textarea name="comment" rows="5" cols="60"></textarea><br><br>
+    <div class="button-row">
+      <button type="submit" class="submit-btn">제출</button>
+      <a href="{% url 'mid_evaluation' %}" class="back-link">← 목록으로</a>
+    </div>
+  </form>
+</div>
 
-  <input type="submit" value="제출">
-</form>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("evalForm");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();  // 폼 기본 동작 막기
+
+      if (!confirm("정말 강의평가를 제출하시겠습니까?")) return;
+
+      const score = document.getElementById("score").value;
+      const comment = document.getElementById("comment").value;
+
+      fetch("/api/evaluation/lecEval", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",  // 템플릿에선 그대로 사용 가능
+        },
+        body: JSON.stringify({
+          id: "{{ user.username }}",
+          course_code: "{{ lecture.course_code }}",
+          eval_type: "mid",
+          score: score,
+          comment: comment,
+          semester: "{{ lecture.semester }}"
+        })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("전송 실패");
+        return response.json();
+      })
+      .then(data => {
+        alert("강의평가가 제출되었습니다!");
+        window.location.href = "{% url 'mid_evaluation' %}";
+      })
+      .catch(err => {
+        alert("제출 중 오류가 발생했습니다: " + err.message);
+      });
+    });
+  });
+</script>
 
 {% endblock %}

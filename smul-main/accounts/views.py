@@ -36,7 +36,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')  # 홈 뷰 이름에 맞게 변경
+            return redirect('/')  # 홈 뷰 이름에 맞게 변경
         else:
             messages.error(request, '로그인 정보가 올바르지 않습니다.')
     else:

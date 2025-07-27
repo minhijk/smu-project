@@ -1,0 +1,55 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}수강신청현황표{% endblock %}
+
+{% block content %}
+<div class="enrollment-wrapper">
+
+  <!-- 학번/성명 입력란  -->
+  <div class="student-info">
+    <label for="student-id">학번 / 성명 <span class="required">*</span></label>
+    <input type="text" id="student-id" value="{{ user.username }}" readonly>
+    <input type="text" id="student-name" value="{{ user.get_full_name|default:'성명없음' }}" readonly>
+  </div>
+
+  <!-- 수강신청 목록 제목 -->
+  <h3 class="enrollment-title">■ 수강신청 목록</h3>
+
+  <!-- 수강신청 테이블 -->
+  <table class="enrollment-table">
+    <thead>
+      <tr>
+        <th>학수번호-분반</th>
+        <th>교과목명</th>
+        <th>학점</th>
+        <th>학년도-학기</th>
+        <th>강의시간</th>
+        <th>담당교수</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+fetch('/api/lecture/enrolled/')
+  .then(response => response.json())
+  .then(data => {
+    const tbody = document.querySelector(".enrollment-table tbody");
+    data.lectures.forEach(lec => {
+      const row = `
+        <tr>
+          <td>${lec.course_code}</td>
+          <td>${lec.course_name}</td>
+          <td>${lec.credit}</td>
+          <td>${lec.semester}</td>
+          <td>${lec.day_time}</td>
+          <td>${lec.professor}</td>
+        </tr>`;
+      tbody.innerHTML += row;
+    });
+  });
+</script>
+
+{% endblock %}

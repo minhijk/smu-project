@@ -1,79 +1,62 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
 {% block title %}전체성적조회{% endblock %}
 
 {% block content %}
-<h3>■ 전체성적조회</h3>
+<div class="grade-wrapper">
 
-<!-- 학번/성명 입력칸 -->
-<form method="GET" style="margin-bottom: 20px;">
-  <label>학번/성명 <span style="color: red;">*</span></label>
-  <input type="text" name="student_id" placeholder="학번 입력" style="width: 150px;">
-  <input type="text" name="student_name" placeholder="성명 입력" style="width: 150px;">
-  <button type="submit">조회</button>
-</form>
+  <!-- 🔹 로그인 사용자 정보 -->
+  <div class="student-info">
+    <label for="student-id">학번 / 성명 <span class="required">*</span></label>
+    <input type="text" id="student-id" value="{{ user.username }}" readonly>
+    <input type="text" id="student-name" value="{{ user.get_full_name|default:'성명없음' }}" readonly>
+  </div>
 
-<!-- 학기별 성적 테이블 -->
-<h4>■ 학기별 성적</h4>
-<table border="1" cellspacing="0" cellpadding="5">
-  <thead>
-    <tr>
-      <th>No</th>
-      <th>학년도</th>
-      <th>학기</th>
-      <th>신청학점</th>
-      <th>취득학점</th>
-      <th>평점계</th>
-      <th>평점평균</th>
-      <th>백분율</th>
-      <th>석차</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>2025</td>
-      <td>1학기</td>
-      <td>20</td>
-      <td>20</td>
-      <td>90.00</td>
-      <td>4.50</td>
-      <td>100.00</td>
-      <td>1/44</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>2022</td>
-      <td>2학기</td>
-      <td>20</td>
-      <td>20</td>
-      <td>80.00</td>
-      <td>4.00</td>
-      <td>94.00</td>
-      <td>6/37</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>2022</td>
-      <td>1학기</td>
-      <td>18</td>
-      <td>18</td>
-      <td>73.50</td>
-      <td>4.08</td>
-      <td>94.80</td>
-      <td>3/38</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>2021</td>
-      <td>2학기</td>
-      <td>18</td>
-      <td>19</td>
-      <td>63.00</td>
-      <td>3.50</td>
-      <td>89.00</td>
-      <td>31/48</td>
-    </tr>
-  </tbody>
-</table>
+  <!-- 🔹 제목 -->
+  <h3 class="grade-title">■ 전체성적조회</h3>
+
+  <!-- 🔹 학기별 성적 테이블 -->
+  <h4>■ 학기별 성적</h4>
+  <table class="grade-table">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>학년도</th>
+        <th>학기</th>
+        <th>신청학점</th>
+        <th>평점계</th>
+        <th>평점평균</th>
+        <th>백분율</th>
+        <th>석차</th>
+      </tr>
+    </thead>
+    <tbody id="grade-table-body">
+      <!-- API에서 동적으로 삽입됨 -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+fetch('/api/grade/total/')
+  .then(response => response.json())
+  .then(data => {
+    const tbody = document.getElementById("grade-table-body");
+    let no = 1;
+    data.grades.forEach(g => {
+      const row = `
+        <tr>
+          <td>${no++}</td>
+          <td>${g.year}</td>
+          <td>${g.semester}</td>
+          <td>${g.total_credit}</td>
+          <td>${parseFloat(g.grade_point).toFixed(2)}</td>
+          <td>${parseFloat(g.grade_average).toFixed(2)}</td>
+          <td>${parseFloat(g.percentile).toFixed(2)}</td>
+          <td>${g.rank}</td>
+        </tr>`;
+      tbody.innerHTML += row;
+    });
+  });
+</script>
 {% endblock %}

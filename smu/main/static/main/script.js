@@ -100,7 +100,7 @@ function openSubMenu(key) {
       document.querySelectorAll('.tag-btn').forEach(btn => {
         btn.addEventListener('click', function () {
           const tag = encodeURIComponent(this.textContent.trim());
-          window.location.href = '/notice/search?q=' + tag;
+          window.location.href = '/noticelist?search=' + tag;
         });
       });
 
@@ -111,7 +111,7 @@ function openSubMenu(key) {
             e.preventDefault();
             const query = encodeURIComponent(this.value.trim());
             if (query) {
-              window.location.href = '/notice/search?search=' + query;
+              window.location.href = '/noticelist?search=' + query;
             }
           }
         });
@@ -170,7 +170,7 @@ function loadNotices(category, tabElement) {
   if (category) params.append('category', category);
   if (searchText) params.append('search', searchText);
 
-  fetch(`/notice/search?${params.toString()}`, {
+  fetch(`/noticelist?${params.toString()}`, {
     headers: { 'X-Requested-With': 'XMLHttpRequest' }
   })
   .then(response => response.json())
@@ -206,7 +206,7 @@ function loadNotices(category, tabElement) {
 function searchByCategory(button) {
     const category = button.textContent.trim();
     const query = encodeURIComponent(category);
-    window.location.href = `/notice/search?search=${query}`;
+    window.location.href = `/noticelist?search=${query}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

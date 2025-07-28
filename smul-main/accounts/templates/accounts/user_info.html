@@ -4,100 +4,155 @@
 <head>
     <meta charset="UTF-8">
     <title>개인정보 변경</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            font-family: '맑은 고딕', sans-serif;
-            background-color: #f7f9fc;
-            padding: 30px;
+    <link rel="stylesheet" href="{% static 'user_info.css' %}">
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function showTab(tabName) {
+            document.getElementById('tab-profile').style.display = 'none';
+            document.getElementById('tab-password').style.display = 'none';
+            document.getElementById('btn-profile').classList.remove('active-tab');
+            document.getElementById('btn-password').classList.remove('active-tab');
+            document.getElementById('tab-' + tabName).style.display = 'block';
+            document.getElementById('btn-' + tabName).classList.add('active-tab');
+        }
+        window.onload = function () {
+            showTab('profile');
         }
 
-        .container {
-            width: 700px;
-            margin: 0 auto;
-            background-color: white;
-            border: 1px solid #ccc;
-            padding: 25px 40px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = (data.userSelectedType === 'R') ? data.roadAddress : data.jibunAddress;
+                    document.querySelector('input[name="zipcode"]').value = data.zonecode;
+                    document.querySelector('input[name="address"]').value = addr;
+                    document.querySelector('input[name="address_detail"]').focus();
+                }
+            }).open();
         }
-
-        h2 {
-            border-bottom: 3px solid #003366;
-            padding-bottom: 10px;
-            color: #003366;
-            margin-bottom: 30px;
-        }
-
-        table {
-            width: 100%;
-            margin-bottom: 20px;
-            border-collapse: collapse;
-        }
-
-        td {
-            padding: 10px 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"] {
-            width: 80%;
-            padding: 5px;
-        }
-
-        .form-section {
-            margin-top: 25px;
-        }
-
-        .form-section input[type="submit"] {
-            background-color: #003366;
-            color: white;
-            padding: 8px 18px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .label {
-            display: inline-block;
-            width: 90px;
-            font-weight: bold;
-        }
-    </style>
+    </script>
 </head>
 <body>
-    <div class="container">
+<!-- 상단바 -->
+<div class="gnb">
+    <div class="logo-button">
+        <a href="/" style="text-decoration: none; color: inherit;">샘물 Sangmyung 포털 시스템</a>
+    </div>
+    <div class="gnb-menu">
+        <a href="/smul/"><button>통합정보</button></a>
+        <button>전자출결</button>
+        <button>e-Campus</button>
+        <button>e-포트폴리오</button>
+        <button>학술정보관</button>
+    </div>
+    <div class="gnb-user">
+        <span>로그아웃 ● 00:00:00 연장</span>
+        <span class="gnb-icon">👤</span>
+        <span class="gnb-icon">🔔</span>
+    </div>
+</div>
+
+<!-- 메인 컨테이너 -->
+<div class="main-container">
+    <!-- 좌측 사이드바 -->
+    <div class="sidebar">
+        <div class="sidebar-title">마이 페이지</div>
+        <ul>
+            <li>
+                <a href="{% url 'user_info_page' %}" class="{% if request.path == '/accounts/user_info/' %}active{% endif %}">개인정보변경</a>
+            </li>
+            <li>
+                <a href="{% url 'message_box' %}" class="{% if request.path == '/accounts/message_box/' %}active{% endif %}">쪽지함</a>
+            </li>
+            <li>
+                <a href="{% url 'todo' %}" class="{% if request.path == '/accounts/todo/' %}active{% endif %}">일정(할일)관리</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 콘텐츠 영역 -->
+    <div class="content">
         <h2>개인정보 변경</h2>
+        <div class="tab-buttons">
+            <button id="btn-profile" onclick="showTab('profile')">개인정보</button>
+            <button id="btn-password" onclick="showTab('password')">비밀번호</button>
+        </div>
 
-        <table>
-            <tr>
-                <td>학번</td>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <td>이름</td>
-                <td>{{ user.name }}</td>
-            </tr>
-            <tr>
-                <td>이메일</td>
-                <td>{{ user.email }}</td>
-            </tr>
-        </table>
+        <!-- 개인정보 탭 -->
+        <div id="tab-profile">
+            {% if profile %}
+            <table class="info-table">
+                <tr><td>학번</td><td>{{ profile.student_id }}</td><td>성명</td><td>{{ profile.name }}</td></tr>
+                <tr><td>휴대폰 번호</td><td>{{ profile.phone }}</td><td>학교 이메일</td><td>{{ profile.email }}</td></tr>
+                <tr><td>주소</td><td colspan="3">({{ profile.zipcode }}) {{ profile.address }} {{ profile.address_detail }}</td></tr>
+            </table>
+            {% else %}
+            <p style="color:red;">학생 정보가 존재하지 않습니다.</p>
+            {% endif %}
 
-        <form method="POST" action="{% url 'user_update' %}">
-            {% csrf_token %}
-            <div class="form-section">
-                <div>
-                    <label class="label">전화번호</label>
-                    <input type="text" name="phone" value="{{ user.phone }}">
-                </div>
-                <div style="margin-top: 10px;">
-                    <label class="label">주소</label>
-                    <input type="text" name="address" value="{{ user.address }}">
-                </div>
-                <div style="margin-top: 20px;">
+            <p class="info-notice">※ 학교 이메일이 없는 경우 교직원은 "웹메일", 학생은 "office365" 메뉴를 통해 신청하십시오.</p>
+
+            <form method="POST" action="{% url 'update_user_address' %}">
+                {% csrf_token %}
+                <table class="edit-table">
+                    <tr>
+                        <td>휴대폰</td>
+                        <td>
+                            <select name="phone_prefix">
+                                <option value="010" {% if profile.phone|slice:":3" == "010" %}selected{% endif %}>010</option>
+                                <option value="011" {% if profile.phone|slice:":3" == "011" %}selected{% endif %}>011</option>
+                            </select>
+                            <input type="text" name="phone" value="{{ profile.phone|slice:"3:" }}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>주소</td>
+                        <td>
+                            <button type="button" onclick="execDaumPostcode()">검색</button>
+                            <input type="text" name="zipcode" placeholder="우편번호" value="{{ profile.zipcode }}">
+                            <input type="text" name="address" placeholder="도로명 주소" value="{{ profile.address }}">
+                            <input type="text" name="address_detail" placeholder="상세 주소" value="{{ profile.address_detail }}">
+                        </td>
+                    </tr>
+                </table>
+                <div class="form-actions">
                     <input type="submit" value="수정하기">
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
+
+        <!-- 비밀번호 변경 탭 -->
+        <div id="tab-password" style="display:none;">
+            <form method="POST" action="{% url 'change_password' %}">
+                {% csrf_token %}
+                <div class="password-rules">
+                    <p>* 비밀번호는 9자리 또는 10자리 이상이어야 합니다.</p>
+                    <p>[ 9자리 ] 영문 대소문자와 숫자, 특수문자 중 3종류 이상<br>
+                       [10자리 ] 영문 대소문자와 숫자, 특수문자 중 2종류 이상</p>
+                    <p>* 생년월일, 휴대폰 번호, 연속 또는 반복된 숫자 4자 이상은 사용하실 수 없습니다.</p>
+                    <p>* 현재 비밀번호와 이전 비밀번호는 사용하실 수 없습니다.</p>
+                </div>
+                <table class="edit-table">
+                    <tr><td>현재 비밀번호</td><td><input type="password" name="current_password"></td></tr>
+                    <tr><td>신규 비밀번호</td><td><input type="password" name="new_password"></td></tr>
+                    <tr><td>신규 비밀번호 확인</td><td><input type="password" name="confirm_password"></td></tr>
+                </table>
+                <div class="form-actions">
+                    <input type="submit" value="수정하기">
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+
+<!-- 하단 정보 -->
+<div class="footer">
+    <p>서울캠퍼스 : 02-2287-5114 (우 03016) 서울시 종로구 홍지문 2길 20 상명대학교<br>
+    천안캠퍼스 : 041-550-5114 (우 31066) 충청남도 천안시 동남구 상명대길 31 상명대학교<br>
+    COPYRIGHT BY SANGMYUNG UNIVERSITY. ALL RIGHTS RESERVED.</p>
+    <div class="footer-right">
+        <span>💻 이전 아이피 : {{ ip_address }}</span>
+        <span>🕒 이전 접속시간 : {{ last_login_time|date:"Y.m.d H:i:s" }}</span>
+    </div>
+</div>
 </body>
 </html>

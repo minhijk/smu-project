@@ -1,17 +1,38 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .forms import ProfileUpdateForm, PasswordChangeForm
 from django.contrib.auth.forms import AuthenticationForm
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from .forms import ProfileUpdateForm, PasswordChangeForm
+from .serializers import UserSerializer
+from smul.academic.models import StudentProfile
 
 # DRF
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer  # ← serializers.py에 맞게 import
 
-# ✅ REST API: 사용자 정보 조회
+
+# --------------------------
+# ✅ 유틸: 클라이언트 IP 추출
+# --------------------------
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+# --------------------------
+# ✅ DRF: 사용자 API
+# --------------------------
+
 class UserInfoAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -19,55 +40,82 @@ class UserInfoAPIView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
-# ✅ REST API: 사용자 정보 수정
+
 class UserUpdateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
         user = request.user
         user.first_name = request.data.get('name', user.first_name)
+        user.email = request.data.get('email', user.email)
         user.save()
-        return Response({'message': '정보가 수정되었습니다.'})
 
-# ✅ 로그인
+        try:
+            profile = StudentProfile.objects.get(user=user)
+            profile.phone = request.data.get('phone', profile.phone)
+            profile.department = request.data.get('department', profile.department)
+            profile.zipcode = request.data.get('zipcode', profile.zipcode)
+            profile.address = request.data.get('address', profile.address)
+            profile.address_detail = request.data.get('address_detail', profile.address_detail)
+            profile.save()
+        except StudentProfile.DoesNotExist:
+            pass
+
+        return Response({'message': '개인정보가 수정되었습니다.'})
+
+
+class ChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        current = request.data.get('current_password')
+        new = request.data.get('new_password')
+        confirm = request.data.get('confirm_password')
+
+        if not request.user.check_password(current):
+            return Response({'error': '현재 비밀번호가 일치하지 않습니다.'}, status=400)
+        if new != confirm:
+            return Response({'error': '새 비밀번호가 확인값과 다릅니다.'}, status=400)
+
+        request.user.set_password(new)
+        request.user.save()
+        return Response({'message': '비밀번호가 성공적으로 변경되었습니다.'})
+
+
+# --------------------------
+# ✅ 로그인/로그아웃
+# --------------------------
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('/')  # 홈 뷰 이름에 맞게 변경
+            return redirect('/')
         else:
             messages.error(request, '로그인 정보가 올바르지 않습니다.')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
 
-# ✅ 로그아웃
+
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-# ✅ 개인정보 수정
-@login_required
-def profile_update(request):
-    if request.method == 'POST':
-        profile_form = ProfileUpdateForm(request.POST, instance=request.user)
-        if profile_form.is_valid():
-            profile_form.save()
-            messages.success(request, '정보가 수정되었습니다.')
-            return redirect('profile_update')
-    else:
-        profile_form = ProfileUpdateForm(instance=request.user)
 
-    return render(request, 'accounts/profile_update.html', {
-        'profile_form': profile_form,
-        'active_tab': 'profile'
-    })
+# --------------------------
+# ✅ 개인정보 / 비밀번호 변경 (템플릿용)
+# --------------------------
 
-# ✅ 비밀번호 변경
 @login_required
-def password_change(request):
+def profile(request):
+    return render(request, 'accounts/profile.html', {'user': request.user})
+
+
+@login_required
+def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.POST)
         if form.is_valid():
@@ -77,30 +125,66 @@ def password_change(request):
                 messages.error(request, '비밀번호 확인이 일치하지 않습니다.')
             else:
                 request.user.set_password(form.cleaned_data['new_password'])
-                request.user.save()
-                update_session_auth_hash(request, request.user)
-                messages.success(request, '비밀번호가 변경되었습니다.')
-                return redirect('password_change')
+                user = request.user
+                user.save()
+                logout(request)
+                messages.success(request, '비밀번호가 변경되었습니다. 다시 로그인해주세요.')
+                return redirect('/')
     else:
         form = PasswordChangeForm()
 
-    return render(request, 'accounts/profile_update.html', {
+    return render(request, 'accounts/change_password.html', {
         'password_form': form,
         'active_tab': 'password'
     })
-@login_required
-def user_profile_view(request):
-    return render(request, 'accounts/profile.html', {'user': request.user})
 
-@login_required
-def user_profile_view(request):
-    return render(request, 'accounts/profile_edit.html')
 
+# --------------------------
+# ✅ 사용자 정보 조회 / 주소 수정
+# --------------------------
 
 @login_required
 def user_info_page(request):
-    return render(request, 'accounts/user_info.html')
+    try:
+        profile = StudentProfile.objects.get(user=request.user)
+    except StudentProfile.DoesNotExist:
+        profile = None
+
+    ip_address = get_client_ip(request)
+    last_login_time = request.user.last_login
+
+    return render(request, 'accounts/user_info.html', {
+        'user': request.user,
+        'profile': profile,
+        'ip_address': ip_address,
+        'last_login_time': last_login_time
+    })
+
 
 @login_required
-def user_info_page(request):
-    return render(request, 'accounts/user_info.html', {'user': request.user})
+def update_user_address(request):
+    if request.method == 'POST':
+        try:
+            profile = StudentProfile.objects.get(user=request.user)
+            profile.zipcode = request.POST.get('zipcode')
+            profile.address = request.POST.get('address')
+            profile.address_detail = request.POST.get('address_detail')
+            profile.save()
+            messages.success(request, '주소 정보가 수정되었습니다.')
+        except StudentProfile.DoesNotExist:
+            messages.error(request, '학생 정보가 존재하지 않습니다.')
+    return redirect('user_info_page')
+
+
+# --------------------------
+# ✅ 쪽지함 / 일정관리
+# --------------------------
+
+@login_required
+def message_box(request):
+    return render(request, 'accounts/message_box.html')
+
+
+@login_required
+def todo_page(request):
+    return render(request, 'accounts/todo.html')

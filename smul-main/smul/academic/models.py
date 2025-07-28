@@ -16,6 +16,16 @@ class StudentProfile(models.Model):
     bank = models.CharField(max_length=50)
     account_number = models.CharField(max_length=50)
     account_holder = models.CharField(max_length=50)
+    zipcode = models.CharField(max_length=10, blank=True, null=True)
+    address = models.CharField(max_length=200, blank=True, null=True)
+    address_detail = models.CharField(max_length=200, blank=True, null=True)
+    total_credit = models.PositiveIntegerField(default=0)     # 총 취득학점
+    major_credit = models.PositiveIntegerField(default=0)     # 전공학점
+    liberal_credit = models.PositiveIntegerField(default=0)   # 교양학점
+    general_credit = models.PositiveIntegerField(default=0)   # 일반선택
+    teaching_credit = models.PositiveIntegerField(default=0)  # 교직학점
+    etc_credit = models.PositiveIntegerField(default=0)       # 기타학점
+    gpa = models.FloatField(default=0.0)                      # 평균 평점
 
     def __str__(self):
         return f"{self.name} ({self.student_id})"

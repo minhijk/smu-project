@@ -1,19 +1,110 @@
-<!-- templates/accounts/profile.html -->
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>개인정보</title>
-    <link rel="stylesheet" href="/static/style.css"> <!-- 필요시 스타일 추가 -->
+    <title>개인정보 변경</title>
+    <link rel="stylesheet" href="{% static 'user_info.css' %}">
 </head>
 <body>
-    <h2>개인정보</h2>
-    <ul>
-        <li>학번: {{ user.username }}</li>
-        <li>이름: {{ user.first_name }}</li>
-        <li>이메일: {{ user.email }}</li>
-        <!-- 필요한 다른 필드 추가 -->
+
+<!-- GNB -->
+<div class="gnb">
+    <div class="gnb-left">
+        <a href="/"><span class="logo">SANGMYUNG 포털시스템</span></a>
+    </div>
+    <ul class="gnb-menu">
+        <li><a href="/smul/">통합정보</a></li>
+        <li>전자출결</li>
+        <li>e-Campus</li>
+        <li>e-포트폴리오</li>
+        <li>학술정보관</li>
     </ul>
+    <div class="gnb-user">
+        {{ user.first_name }} ({{ user.username }}) 님
+        <a href="/accounts/logout/">로그아웃</a>
+    </div>
+</div>
+
+<!-- 본문 -->
+<div class="container">
+
+    <!-- 좌측 메뉴 -->
+    <div class="sidebar">
+        <div class="menu-title">마이 페이지</div>
+        <ul class="menu">
+            <li class="active"><a href="/accounts/profile/">개인정보변경</a></li>
+            <li><a href="/accounts/message/">쪽지함</a></li>
+            <li><a href="/accounts/todo/">일정(할일)관리</a></li>
+        </ul>
+    </div>
+
+    <!-- 우측 콘텐츠 -->
+    <div class="content">
+        <h2>개인정보 변경</h2>
+
+        <!-- 탭 -->
+        <div class="tab-menu">
+            <a href="/accounts/profile/" class="tab active">개인정보</a>
+            <a href="/accounts/password/" class="tab">비밀번호</a>
+        </div>
+
+        <!-- 개인정보 영역 -->
+        <div class="form-box">
+            <table class="info-table">
+                <tr>
+                    <th>학번</th>
+                    <td>{{ user.username }}</td>
+                    <th>이름</th>
+                    <td>{{ user.first_name }}</td>
+                </tr>
+                <tr>
+                    <th>휴대폰 번호</th>
+                    <td colspan="3">010-1234-5678</td>
+                </tr>
+                <tr>
+                    <th>이메일</th>
+                    <td colspan="3">{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                    <td colspan="3">서울특별시 종로구 상명로 31</td>
+                </tr>
+            </table>
+
+            <!-- 수정 폼 -->
+            <form method="post">
+                {% csrf_token %}
+                <table class="edit-table">
+                    <tr>
+                        <th>휴대폰</th>
+                        <td>
+                            <select name="phone_prefix">
+                                <option value="010">010</option>
+                                <option value="011">011</option>
+                            </select>
+                            <input type="text" name="phone_mid" class="input-short"> -
+                            <input type="text" name="phone_last" class="input-short">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td>
+                            <input type="text" name="zipcode" class="input-zipcode" placeholder="우편번호">
+                            <button type="button">검색</button><br>
+                            <input type="text" name="addr1" class="input-long" placeholder="기본주소"><br>
+                            <input type="text" name="addr2" class="input-long" placeholder="상세주소">
+                        </td>
+                    </tr>
+                </table>
+                <div class="btn-box">
+                    <button type="submit" class="btn-submit">수정하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
 </body>
 </html>

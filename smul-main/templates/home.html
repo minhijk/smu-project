@@ -5,18 +5,21 @@
     <meta charset="UTF-8">
     <title>샘물 포털 메인</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <!-- GNB -->
 <div id="gnb">
-    <div class="logo">SANGMYUNG 포털시스템</div>
+    <div class="logo">
+        <a href="/" style="text-decoration:none; color:inherit;">SANGMYUNG 포털시스템</a>
+    </div>
     <ul class="gnb-menu">
         <li><a href="/smul/">통합정보</a></li>
-        <li>전자출결</li>
-        <li>e-Campus</li>
-        <li>e-포트폴리오</li>
-        <li>학술정보관</li>
+        <li><a href="#">전자출결</a></li>
+        <li><a href="#">e-Campus</a></li>
+        <li><a href="#">e-포트폴리오</a></li>
+        <li><a href="#">학술정보관</a></li>
     </ul>
     <div class="user-info" id="userInfoArea">
         <a href="/accounts/login/">로그인</a>
@@ -27,8 +30,9 @@
 <div id="notice-area">
     <strong>📢 공지사항</strong>
     <ul>
-        <li>[학사공지] 2025학년도 하계 계절수업 수강신청 안내</li>
-        <li>[학사공지] 여름학기 공결 안내</li>
+        {% for notice in notice_list %}
+            <li>{{ notice.title }}</li>
+        {% endfor %}
     </ul>
 </div>
 
@@ -45,159 +49,123 @@
 <!-- 대시보드 -->
 <div id="dashboard">
 
+    <!-- 학점취득현황 -->
     <div class="portlet">
         <div class="portlet-header">📊 학점취득현황 <span class="action">+</span></div>
-        <div class="portlet-body">원형 그래프 영역</div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">📢 공지사항 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <ul>
-                <li>[학사공지] 공결 안내</li>
-                <li>[장학공지] 국가장학금 신청</li>
-            </ul>
+        <div class="portlet-body" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="position: relative; width: 160px; height: 160px;">
+                <canvas id="gradeChart" width="160" height="160"></canvas>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                            font-size: 14px; font-weight: bold; text-align: center;">
+                    학점계<br>{{ grade.total|default:"0" }}
+                </div>
+            </div>
+            <div style="margin-left: 10px; font-size: 13px;">
+                <div style="font-weight: bold;">평균평점 <span style="color: red;">{{ grade.gpa|default:"0.00" }}</span></div>
+                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                    <li><span style="background:#f28e2b; display:inline-block; width:10px; height:10px; margin-right:5px;"></span> 교양</li>
+                    <li><span style="background:#4e79a7; display:inline-block; width:10px; height:10px; margin-right:5px;"></span> 전공</li>
+                    <li><span style="background:#76b7b2; display:inline-block; width:10px; height:10px; margin-right:5px;"></span> 일반</li>
+                    <li><span style="background:#e15759; display:inline-block; width:10px; height:10px; margin-right:5px;"></span> 교직</li>
+                    <li><span style="background:#bab0ab; display:inline-block; width:10px; height:10px; margin-right:5px;"></span> 기타</li>
+                </ul>
+            </div>
         </div>
     </div>
 
+    <!-- 강의시간표 -->
     <div class="portlet">
         <div class="portlet-header">🕓 강의시간표 <span class="action">+</span></div>
         <div class="portlet-body">
-            <p>2025.07.08 (화)</p>
-            <p>등록된 강의가 없습니다.</p>
+            {% for item in timetable %}
+                <p>{{ item.day }}요일 - {{ item.subject }} ({{ item.time }})</p>
+            {% empty %}
+                <p>등록된 강의가 없습니다.</p>
+            {% endfor %}
         </div>
     </div>
 
-    <div class="portlet">
-        <div class="portlet-header">✅ 출결현황 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>2025학년도 출결현황</p>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">📆 휴보강내역 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>조회된 내용이 없습니다.</p>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">📈 성적조회 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <ul>
-                <li>시스템소프트웨어: A+</li>
-                <li>이산수학: B+</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">🎯 비교과프로그램 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>D-23 진로취업특강</p>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">🏫 열람실 사용현황 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>좌석: 192 / 잔여: 4</p>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">💬 상담현황 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <ul>
-                <li>진로상담: 0건</li>
-                <li>기타: 0건</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">🧾 수강신청내역 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <ul>
-                <li>정보보안개론</li>
-                <li>네트워크보안</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">🍱 학교식당 메뉴 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <ul>
-                <li>한식: 김치찌개, 제육볶음</li>
-                <li>양식: 치킨까스</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">📚 신착도서 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>[도서1] 심리의 모든 것</p>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">📁 SM-CDR 이수현황 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>등록된 CDR 이수 내역이 없습니다.</p>
-        </div>
-    </div>
-
+    <!-- 오늘의 대기질/날씨 -->
     <div class="portlet">
         <div class="portlet-header">🌫️ 오늘의 대기질/날씨 <span class="action">+</span></div>
         <div class="portlet-body">
-            <p>미세먼지: 31μg/m³ (좋음)</p>
-            <p>초미세먼지: 5μg/m³ (좋음)</p>
+            <p>미세먼지: {{ air_quality.pm10|default:"-" }}㎍/㎥ ({{ air_quality.pm10_grade|default:"-" }})</p>
+            <p>초미세먼지: {{ air_quality.pm25|default:"-" }}㎍/㎥ ({{ air_quality.pm25_grade|default:"-" }})</p>
+            <p>기온: {{ weather.temp|default:"-" }}℃ | 상태: {{ weather.condition|default:"-" }} | 습도: {{ weather.humidity|default:"-" }}%</p>
+            {% if weather.icon %}
+                <img src="https:{{ weather.icon }}" alt="날씨 아이콘">
+            {% endif %}
         </div>
     </div>
 
-    <div class="portlet">
-        <div class="portlet-header">🧾 나의 교육과정 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <ul>
-                <li>HBL04501 English Foundations</li>
-                <li>HBL04903 알고리즘</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="portlet">
-        <div class="portlet-header">📸 페이스북 <span class="action">+</span></div>
-        <div class="portlet-body">
-            <p>페이스북 사진 영역</p>
-        </div>
-    </div>
+    <!-- 더미 콘텐츠 -->
+    <div class="portlet"><div class="portlet-header">📈 성적조회 <span class="action">+</span></div><div class="portlet-body"><ul><li>시스템소프트웨어: A+</li><li>이산수학: B+</li></ul></div></div>
+    <div class="portlet"><div class="portlet-header">📢 공지사항 <span class="action">+</span></div><div class="portlet-body"><ul><li>[학사공지] 공결 안내</li><li>[장학공지] 국가장학금 신청</li></ul></div></div>
+    <div class="portlet"><div class="portlet-header">✅ 출결현황 <span class="action">+</span></div><div class="portlet-body"><p>2025학년도 출결현황</p></div></div>
+    <div class="portlet"><div class="portlet-header">📆 휴보강내역 <span class="action">+</span></div><div class="portlet-body"><p>조회된 내용이 없습니다.</p></div></div>
+    <div class="portlet"><div class="portlet-header">🎯 비교과프로그램 <span class="action">+</span></div><div class="portlet-body"><p>D-23 진로취업특강</p></div></div>
+    <div class="portlet"><div class="portlet-header">🏫 열람실 사용현황 <span class="action">+</span></div><div class="portlet-body"><p>좌석: 192 / 잔여: 4</p></div></div>
+    <div class="portlet"><div class="portlet-header">💬 상담현황 <span class="action">+</span></div><div class="portlet-body"><ul><li>진로상담: 0건</li><li>기타: 0건</li></ul></div></div>
+    <div class="portlet"><div class="portlet-header">🧾 수강신청내역 <span class="action">+</span></div><div class="portlet-body"><ul><li>정보보안개론</li><li>네트워크보안</li></ul></div></div>
+    <div class="portlet"><div class="portlet-header">🍱 학교식당 메뉴 <span class="action">+</span></div><div class="portlet-body"><ul><li>한식: 김치찌개, 제육볶음</li><li>양식: 치킨까스</li></ul></div></div>
+    <div class="portlet"><div class="portlet-header">📚 신착도서 <span class="action">+</span></div><div class="portlet-body"><p>[도서1] 심리의 모든 것</p></div></div>
+    <div class="portlet"><div class="portlet-header">📁 SM-CDR 이수현황 <span class="action">+</span></div><div class="portlet-body"><p>등록된 CDR 이수 내역이 없습니다.</p></div></div>
+    <div class="portlet"><div class="portlet-header">🧾 나의 교육과정 <span class="action">+</span></div><div class="portlet-body"><ul><li>HBL04501 English Foundations</li><li>HBL04903 알고리즘</li></ul></div></div>
+    <div class="portlet"><div class="portlet-header">📸 페이스북 <span class="action">+</span></div><div class="portlet-body"><p>페이스북 사진 영역</p></div></div>
 
 </div>
 
+<!-- 로그인 정보 -->
 <script>
-  fetch('/accounts/api/user/', {
+fetch('/accounts/api/user/', {
     credentials: 'include',
-    headers: {
-      'X-Requested-With': 'XMLHttpRequest'
-    }
-  })
-    .then(res => {
-      if (!res.ok) throw new Error('인증 안 됨');
-      return res.json();
-    })
-    .then(data => {
-      document.getElementById('userInfoArea').innerHTML =
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+})
+.then(res => res.ok ? res.json() : Promise.reject())
+.then(data => {
+    document.getElementById('userInfoArea').innerHTML =
         `${data.first_name} (${data.username}) | 
          <a href="/accounts/logout/">로그아웃</a> | 
          <a href="/accounts/profile/">내 정보</a>`;
-    })
-    .catch(() => {
-      document.getElementById('userInfoArea').innerHTML =
+})
+.catch(() => {
+    document.getElementById('userInfoArea').innerHTML =
         `<a href="/accounts/login/">로그인</a>`;
+});
+</script>
+
+<!-- Chart.js 도넛 그래프 -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('gradeChart')?.getContext('2d');
+    if (!ctx) return;
+
+    const major = {{ grade.major|default:"0" }};
+    const liberal = {{ grade.liberal|default:"0" }};
+    const general = {{ grade.general|default:"0" }};
+    const teacher = {{ grade.teacher|default:"0" }};
+    const total = {{ grade.total|default:"0" }};
+    const etc = Math.max(total - major - liberal - general - teacher, 0);
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['교양', '전공', '일반', '교직', '기타'],
+            datasets: [{
+                data: [liberal, major, general, teacher, etc],
+                backgroundColor: ['#f28e2b', '#4e79a7', '#76b7b2', '#e15759', '#bab0ab'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true }
+            }
+        }
     });
+});
 </script>
 
 </body>

@@ -18,7 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 # --------------------------
-# ✅ 유틸: 클라이언트 IP 추출
+# ✅ 클라이언트 IP 추출
 # --------------------------
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -30,7 +30,7 @@ def get_client_ip(request):
 
 
 # --------------------------
-# ✅ DRF: 사용자 API
+# ✅ DRF API
 # --------------------------
 
 class UserInfoAPIView(APIView):
@@ -83,7 +83,7 @@ class ChangePasswordAPIView(APIView):
 
 
 # --------------------------
-# ✅ 로그인/로그아웃
+# ✅ 로그인 / 로그아웃
 # --------------------------
 
 def login_view(request):
@@ -106,41 +106,56 @@ def logout_view(request):
 
 
 # --------------------------
-# ✅ 개인정보 / 비밀번호 변경 (템플릿용)
+# ✅ 비밀번호 변경
 # --------------------------
 
 @login_required
-def profile(request):
-    return render(request, 'accounts/profile.html', {'user': request.user})
-
-
-@login_required
 def change_password(request):
+    error_current = None
+    error_confirm = None
+
     if request.method == 'POST':
         form = PasswordChangeForm(request.POST)
         if form.is_valid():
             if not request.user.check_password(form.cleaned_data['current_password']):
-                messages.error(request, '현재 비밀번호가 틀렸습니다.')
+                error_current = '현재 비밀번호가 틀렸습니다.'
             elif form.cleaned_data['new_password'] != form.cleaned_data['confirm_password']:
-                messages.error(request, '비밀번호 확인이 일치하지 않습니다.')
+                error_confirm = '비밀번호 확인이 일치하지 않습니다.'
             else:
                 request.user.set_password(form.cleaned_data['new_password'])
-                user = request.user
-                user.save()
-                logout(request)
-                messages.success(request, '비밀번호가 변경되었습니다. 다시 로그인해주세요.')
-                return redirect('/')
+                request.user.save()
+                messages.success(request, '비밀번호가 변경되었습니다.')
+                request.session['force_logout'] = True
+                return redirect('user_info_page')
     else:
         form = PasswordChangeForm()
 
-    return render(request, 'accounts/change_password.html', {
+    try:
+        profile = StudentProfile.objects.get(user=request.user)
+    except StudentProfile.DoesNotExist:
+        profile = None
+
+    ip_address = get_client_ip(request)
+    last_login_time = request.user.last_login
+    force_logout = request.session.get('force_logout', False)
+    if force_logout:
+        del request.session['force_logout']
+
+    return render(request, 'accounts/user_info.html', {
+        'user': request.user,
+        'profile': profile,
+        'ip_address': ip_address,
+        'last_login_time': last_login_time,
         'password_form': form,
-        'active_tab': 'password'
+        'active_tab': 'password',
+        'error_current': error_current,
+        'error_confirm': error_confirm,
+        'force_logout': force_logout,
     })
 
 
 # --------------------------
-# ✅ 사용자 정보 조회 / 주소 수정
+# ✅ 개인정보 페이지
 # --------------------------
 
 @login_required
@@ -152,12 +167,16 @@ def user_info_page(request):
 
     ip_address = get_client_ip(request)
     last_login_time = request.user.last_login
+    force_logout = request.session.get('force_logout', False)
+    if force_logout:
+        del request.session['force_logout']
 
     return render(request, 'accounts/user_info.html', {
         'user': request.user,
         'profile': profile,
         'ip_address': ip_address,
-        'last_login_time': last_login_time
+        'last_login_time': last_login_time,
+        'force_logout': force_logout,
     })
 
 
@@ -166,11 +185,15 @@ def update_user_address(request):
     if request.method == 'POST':
         try:
             profile = StudentProfile.objects.get(user=request.user)
+            phone_prefix = request.POST.get('phone_prefix')
+            phone_body = request.POST.get('phone')
+            phone_full = f"{phone_prefix}{phone_body}"
+            profile.phone = phone_full
             profile.zipcode = request.POST.get('zipcode')
             profile.address = request.POST.get('address')
             profile.address_detail = request.POST.get('address_detail')
             profile.save()
-            messages.success(request, '주소 정보가 수정되었습니다.')
+            messages.success(request, '개인 정보가 수정되었습니다.')
         except StudentProfile.DoesNotExist:
             messages.error(request, '학생 정보가 존재하지 않습니다.')
     return redirect('user_info_page')

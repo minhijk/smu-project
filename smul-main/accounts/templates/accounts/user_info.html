@@ -16,22 +16,23 @@
             document.getElementById('btn-' + tabName).classList.add('active-tab');
         }
         window.onload = function () {
-            showTab('profile');
-        }
-
-        function execDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function(data) {
-                    var addr = (data.userSelectedType === 'R') ? data.roadAddress : data.jibunAddress;
-                    document.querySelector('input[name="zipcode"]').value = data.zonecode;
-                    document.querySelector('input[name="address"]').value = addr;
-                    document.querySelector('input[name="address_detail"]').focus();
-                }
-            }).open();
+            showTab('{{ active_tab|default:"profile" }}');
         }
     </script>
 </head>
 <body>
+
+{% if force_logout %}
+<script>
+    window.onload = function () {
+        alert("비밀번호가 변경되었습니다.");
+        fetch("{% url 'logout' %}").then(() => {
+            window.location.href = "{% url 'login' %}";
+        });
+    };
+</script>
+{% endif %}
+
 <!-- 상단바 -->
 <div class="gnb">
     <div class="logo-button">
@@ -57,15 +58,9 @@
     <div class="sidebar">
         <div class="sidebar-title">마이 페이지</div>
         <ul>
-            <li>
-                <a href="{% url 'user_info_page' %}" class="{% if request.path == '/accounts/user_info/' %}active{% endif %}">개인정보변경</a>
-            </li>
-            <li>
-                <a href="{% url 'message_box' %}" class="{% if request.path == '/accounts/message_box/' %}active{% endif %}">쪽지함</a>
-            </li>
-            <li>
-                <a href="{% url 'todo' %}" class="{% if request.path == '/accounts/todo/' %}active{% endif %}">일정(할일)관리</a>
-            </li>
+            <li><a href="{% url 'user_info_page' %}" class="{% if request.path == '/accounts/user_info/' %}active{% endif %}">개인정보변경</a></li>
+            <li><a href="{% url 'message_box' %}" class="{% if request.path == '/accounts/message_box/' %}active{% endif %}">쪽지함</a></li>
+            <li><a href="{% url 'todo' %}" class="{% if request.path == '/accounts/todo/' %}active{% endif %}">일정(할일)관리</a></li>
         </ul>
     </div>
 
@@ -132,9 +127,28 @@
                     <p>* 현재 비밀번호와 이전 비밀번호는 사용하실 수 없습니다.</p>
                 </div>
                 <table class="edit-table">
-                    <tr><td>현재 비밀번호</td><td><input type="password" name="current_password"></td></tr>
-                    <tr><td>신규 비밀번호</td><td><input type="password" name="new_password"></td></tr>
-                    <tr><td>신규 비밀번호 확인</td><td><input type="password" name="confirm_password"></td></tr>
+                    <tr>
+                        <td>현재 비밀번호</td>
+                        <td>
+                            <input type="password" name="current_password">
+                            {% if error_current %}
+                                <span style="color:red; font-size:0.9em;">{{ error_current }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>신규 비밀번호</td>
+                        <td><input type="password" name="new_password"></td>
+                    </tr>
+                    <tr>
+                        <td>신규 비밀번호 확인</td>
+                        <td>
+                            <input type="password" name="confirm_password">
+                            {% if error_confirm %}
+                                <span style="color:red; font-size:0.9em;">{{ error_confirm }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
                 </table>
                 <div class="form-actions">
                     <input type="submit" value="수정하기">

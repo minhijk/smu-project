@@ -1,0 +1,81 @@
+<!-- templates/main/academic/calendar.html -->
+{% extends "main/base.html" %}
+
+{% block title %}학사일정 | 학사안내{% endblock %}
+
+{% block content %}
+<div class="calendar-top-bar">
+  <div>학사일정</div><span>|</span><div>학사안내</div>
+</div>
+<div class="calendar-top-bar-line"></div>
+
+<div class="calendar-container">
+  <div class="calendar-header">
+      <span id="calendar-title"></span>
+      <select id="yearSelect">
+          <option value="2021">2021년</option>
+          <option value="2022">2022년</option>
+          <option value="2023">2023년</option>
+          <option value="2024">2024년</option>
+          <option value="2025">2025년</option>
+          <option value="2026">2026년</option>
+      </select>
+      <button id="gotoBtn">바로가기</button>
+  </div>
+  <div id='calendar'></div>
+</div>
+
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/locales/ko.js'></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var yearSelect = document.getElementById('yearSelect');
+    var gotoBtn = document.getElementById('gotoBtn');
+    var titleEl = document.getElementById('calendar-title');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'ko',
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev',
+            center: 'title',
+            right: 'next dayGridMonth,listMonth'
+        },
+        titleFormat: { month: 'long' }, // '7월'만 나오게
+
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch('/api/academic/calendar/?start=' + fetchInfo.startStr.slice(0,10) + '&end=' + fetchInfo.endStr.slice(0,10))
+                .then(response => response.json())
+                .then(data => successCallback(data))
+                .catch(error => failureCallback(error));
+        }
+    });
+
+    calendar.render();
+
+    var currentYear = calendar.getDate().getFullYear();
+    yearSelect.value = currentYear;
+
+    titleEl.textContent = calendar.view.title;
+    calendar.on('datesSet', function(info) {
+        titleEl.textContent = info.view.title;
+        var newYear = info.start.getFullYear();
+        yearSelect.value = newYear;
+    });
+
+    yearSelect.addEventListener('change', function() {
+        var year = parseInt(this.value);
+        var current = calendar.getDate();
+        var month = current.getMonth();
+        var newDate = new Date(year, month, 1);
+        calendar.gotoDate(newDate);
+    });
+
+    gotoBtn.addEventListener('click', function() {
+        calendar.today();
+    });
+});
+</script>
+{% endblock %}

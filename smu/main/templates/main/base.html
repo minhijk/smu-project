@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>상명대학교</title>
+  <link rel="stylesheet" href="{% static 'main/style.css' %}">  <!--css 호출-->
+</head>
+<body>
+
+<!-- 사이드바 -->
+<div class="sidebar">
+  <div class="sidebar-header" onclick="window.location.href='/'">
+    <img src="{% static 'main/smu_logo.png' %}" alt="상명대학교 로고" style="width:60px; margin-bottom:10px;">
+  </div>
+
+  <div class="menu-item" onclick="openSubMenu('intro')">상명소개</div>
+  <div class="menu-item" onclick="openSubMenu('admission')">입학안내</div>
+  <div class="menu-item" onclick="openSubMenu('college')">대학 · 대학원</div>
+  <div class="menu-item" onclick="openSubMenu('research')">연구 · 산학</div>
+  <div class="menu-item" onclick="openSubMenu('academic')">학사안내</div>
+  <div class="menu-item" onclick="openSubMenu('life')">대학생활</div>
+  
+  <div class="sidebar-extra">
+    <div class="menu-item" onclick="openSubMenu('course')">수강신청</div>
+    <div class="menu-item">SMPOPUP</div>
+    <div class="menu-item" data-key="login">LOGIN</div>
+    <div class="menu-item" onclick="openSubMenu('favorites')">자주 사용하는 메뉴</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="icon-button" onclick="openSubMenu('search')">🔍</div>
+    <div class="icon-button" onclick="window.location.href='/academic/calendar'">📅</div>
+  </div>
+
+  <div class="lang">
+    ENG&nbsp;&nbsp;CHN&nbsp;&nbsp;VNM
+  </div>
+</div>
+
+
+<!-- 서브 메뉴 -->
+<div id="subMenu" class="sub-menu">
+  <div class="close-btn" onclick="closeSubMenu()">×</div>
+  <h3 id="subMenuTitle">제목</h3>
+  <div id="subMenuContent">내용</div>
+</div>
+
+<!-- 메인 콘텐츠 -->
+<div class="main-content">
+  {% block content %}
+  <!--자식 템플릿에서 이 부분을 채움-->
+  {%endblock%}
+</div>
+
+<script>
+  window.isLoggedIn = "{{ user.is_authenticated|yesno:'true,false' }}";
+  console.log('isLoggedIn:', window.isLoggedIn);
+</script>
+<script src="{% static 'main/script.js' %}"></script>
+
+</body>
+</html>

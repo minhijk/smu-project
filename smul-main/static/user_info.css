@@ -1,0 +1,201 @@
+/* 기본 스타일 */
+body {
+    margin: 0;
+    font-family: '맑은 고딕', sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+/* GNB (상단바) */
+.gnb {
+    background-color: #004080;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    align-items: center;
+}
+
+.logo-button {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.gnb-menu button {
+    background: none;
+    border: none;
+    color: white;
+    margin: 0 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.gnb-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gnb-icon {
+    font-size: 18px;
+}
+
+/* 메인 컨테이너 */
+.main-container {
+    display: flex;
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+/* 좌측 사이드바 */
+.sidebar {
+    width: 200px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-right: 20px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+.sidebar-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar ul li a.active {
+    font-weight: bold;
+    color: #004080;
+}
+
+/* 콘텐츠 영역 */
+.content {
+    flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+.content h2 {
+    margin-top: 0;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* 탭 버튼 */
+.tab-buttons {
+    margin-bottom: 20px;
+}
+
+.tab-buttons button {
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    padding: 6px 14px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.tab-buttons .active-tab {
+    background-color: #004080;
+    color: white;
+    border-color: #004080;
+}
+
+/* 테이블 스타일 */
+.info-table,
+.edit-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.info-table td,
+.edit-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.info-table td:first-child,
+.edit-table td:first-child {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    width: 130px;
+}
+
+/* 안내 문구 */
+.info-notice {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+/* 입력 폼 */
+input[type="text"],
+input[type="password"],
+select {
+    padding: 6px;
+    width: 200px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+input[placeholder] {
+    font-size: 13px;
+}
+
+/* 버튼 */
+button,
+input[type="submit"] {
+    background-color: #004080;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #002f5f;
+}
+
+/* 비밀번호 규칙 */
+.password-rules {
+    background-color: #f4f4f4;
+    padding: 10px;
+    font-size: 13px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+}
+
+/* 푸터 */
+.footer {
+    background-color: #f1f1f1;
+    font-size: 12px;
+    padding: 20px;
+    margin-top: 30px;
+    color: #555;
+    border-top: 1px solid #ccc;
+}
+
+.footer-right {
+    margin-top: 10px;
+    text-align: right;
+    color: #777;
+}

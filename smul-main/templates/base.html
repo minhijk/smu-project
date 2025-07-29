@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상명대학교 포털</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">상명대학교 포털 시스템</div>
+        <nav class="menu">
+            <a href="https://portal.smu.ac.kr/p/S00/" target="_blank">통합정보</a>
+            <a href="#">전자출결</a>
+            <a href="https://ecampus.smu.ac.kr/" target="_blank">e-Campus</a>
+            <a href="#">학사정보</a>
+            <a href="{% url 'profile_update' %}">개인정보 변경</a>
+            {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:#00f;cursor:pointer;padding:0;margin:0;">로그아웃</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">로그인</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

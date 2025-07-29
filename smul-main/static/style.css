@@ -1,0 +1,122 @@
+
+@charset "UTF-8";
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f3f5f7;
+    font-family: 'Malgun Gothic', sans-serif;
+    font-size: 12px;
+    color: #333;
+}
+
+#wrapper {
+    width: 1220px;
+    margin: 0 auto;
+    padding: 10px 0 30px;
+}
+
+/* GNB 상단 바 */
+#gnb {
+    height: 40px;
+    background-color: #0b2e59;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 13px;
+}
+#gnb ul {
+    list-style: none;
+    display: flex;
+    gap: 18px;
+}
+#gnb li {
+    cursor: pointer;
+}
+
+/* 공지 + 버튼바 */
+#top-box {
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-top: 14px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+#top-buttons {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+#top-buttons button {
+    background: #014d94;
+    color: #fff;
+    border: none;
+    padding: 5px 12px;
+    font-size: 11px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 포틀릿 영역 */
+#dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+}
+
+/* 포틀릿 박스 */
+.portlet {
+    background: #fff;
+    border: 1px solid #d6d6d6;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 160px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* 헤더 */
+.portlet-header {
+    background: #f8f8f8;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    font-weight: bold;
+    font-size: 13px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 바디 */
+.portlet-body {
+    padding: 14px;
+    flex: 1;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.portlet-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+.portlet-body table th,
+.portlet-body table td {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+.portlet-body ul {
+    padding-left: 18px;
+    margin: 0;
+}
+.portlet-body p {
+    margin: 0;
+}

@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>비밀번호 초기화</title>
+  <link rel="stylesheet" href="{% static 'PwdResetSMS/SMS_reset.css' %}">
+</head>
+<body>
+  <div class="reset-wrapper">
+    <a href="/login/">
+      <img src="{% static 'PwdResetSMS/sso_logo.png' %}" alt="샘물 통합 로그인" class="logo">
+    </a>
+
+    <div class="title-area">
+      <div class="lock-icon">🔒</div>
+      <h2>비밀번호 초기화</h2>
+    </div>
+
+    <p class="instruction">
+      학번/교직원번호, 성명을 입력 후 [인증번호 발송]을 눌러주시기 바랍니다.<br>
+      학교에 등록된 이메일주소로 인증번호 6자리가 전송됩니다.<br>
+      메세지로 전송된 인증번호 6자리를 입력 후 [확인]을 눌러주시기 바랍니다.
+    </p>
+
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+  <h3 style="text-align: left; font-size: 20px; margin-bottom: 20px; color: #003da5;">메세지(SMS)</h3>
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" name="student_id" id = "student_id" placeholder="학번/교직원번호" class="form-input" autocomplete="username"><br>
+    <input type="text" name="name" id = "name" placeholder="성명" class="form-input"><br>
+    
+
+    <div class="code-row">
+      <input type="text" id="code" name="code" placeholder="인증번호 6자리" class="code-input"><br>
+      <button type="button" onclick="sendCode()" class="code-btn">인증번호 발송</button>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" onclick="verifyCode()" class="wide-btn">확인</button>
+      <button type="button" onclick="location.href='/login/reset/'" class="wide-btn back">돌아가기</button>
+    </div>
+  </form>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  </div>
+</body>
+</html>
+
+<script>
+const API_BASE = "http://127.0.0.1:8001";  // ✅ SSO API 서버 주소
+
+async function sendCode() {
+  const student_id = document.getElementById("student_id").value;
+  const name = document.getElementById("name").value;
+
+  const res = await fetch(`${API_BASE}/api/send-code/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ student_id, name })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    alert("✅ 인증번호를 전송했습니다.");
+  } else {
+    alert("❌ 실패: " + (data.error || "서버 오류"));
+  }
+}
+
+async function verifyCode() {
+  const student_id = document.getElementById("student_id").value;
+  const code = document.getElementById("code").value;
+
+  const res = await fetch(`${API_BASE}/api/verify-code/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ student_id, code })
+  });
+
+  const data = await res.json();
+  const resultDiv = document.getElementById("result");
+
+  if (res.ok) {
+    resultDiv.innerHTML = `
+      <p style="color:green;">
+        <strong>임시 비밀번호: ${data.temp_password}</strong>
+        <br>로그인 후 반드시 비밀번호를 변경해 주세요.
+      </p>`;
+  } else {
+    resultDiv.innerHTML = `<p style="color:red;">❌ 인증 실패: ${data.error}</p>`;
+  }
+}
+</script>

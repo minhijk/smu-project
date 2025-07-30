@@ -1,0 +1,138 @@
+{% extends "main/base.html" %}
+
+{% block title %}{{ notice.title }}{% endblock %}
+
+{% block content %}
+<!-- 제목 영역 -->
+<h1 id="notice-title-display">{{ notice.title }}</h1>
+<input type="text" id="notice-title-edit" value="{{ notice.title }}" style="width: 100%; font-size: 1.5em; display: none;" />
+
+<!-- 메타 정보 -->
+<div class="meta">
+  <h3>작성자: {{ notice.author }} | 작성일: {{ notice.created_at|date:"Y-m-d" }}</h3>
+</div>
+
+<!-- 본문 내용 -->
+<p id="notice-content-display">{{ notice.content|linebreaks }}</p>
+<textarea id="notice-content-edit" style="width: 100%; display: none;" rows="10">{{ notice.content }}</textarea>
+
+<!-- 버튼 영역 -->
+<div id="admin-button-area" style="margin-top: 20px;"></div>
+
+<!-- 목록 이동 -->
+<a href="/noticelist" style="color: #0d47a1; text-decoration: none;">목록으로 돌아가기</a>
+
+<!-- 관리자 권한 시 수정/삭제 버튼 삽입 -->
+<script>
+
+  const item = data[key];
+
+    title.innerText = (key === 'search') ? '' : (item?.title || '메뉴');
+
+    if (item?.link) {
+        window.location.href = item.link;
+        closeSubMenu();
+    } else {
+        content.innerHTML = item?.content || '선택된 메뉴에 대한 설명이 없습니다.';
+    }
+
+    subMenu.classList.add('active');
+
+    if (key === 'search') {
+        setTimeout(() => {
+            document.querySelectorAll('#subMenuContent .tag-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const tag = encodeURIComponent(this.textContent.trim());
+                    window.location.href = `/noticelist?search=${tag}`; 
+                });
+            });
+
+            const input = document.getElementById('subMenuSearchInput');
+            if (input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const query = encodeURIComponent(this.value.trim());
+                        if (query) {
+                            window.location.href = `/noticelist?search=${query}`;
+                        }
+                    }
+                });
+            }
+        }, 0);
+    }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const payload = getDecodedJWT();
+  const role = payload?.role;
+  const noticeId = new URLSearchParams(location.search).get("id");
+
+  if (role === "admin") {
+    const area = document.getElementById("admin-button-area");
+    area.innerHTML = `
+      <button id="edit-toggle" style="margin-right: 10px; padding: 10px 20px; background: #1976d2; color: white; border: none;">
+        ✏️ 수정 모드
+      </button>
+      <button id="save-edit" style="margin-right: 10px; padding: 10px 20px; background: green; color: white; border: none; display: none;">
+        💾 저장
+      </button>
+      <button onclick="deleteNotice(${noticeId})" style="padding: 10px 20px; background: red; color: white; border: none;">
+        🗑️ 삭제
+      </button>
+    `;
+
+    const toggleBtn = document.getElementById("edit-toggle");
+    const saveBtn = document.getElementById("save-edit");
+
+    toggleBtn.addEventListener("click", () => {
+      document.getElementById("notice-title-display").style.display = "none";
+      document.getElementById("notice-content-display").style.display = "none";
+      document.getElementById("notice-title-edit").style.display = "block";
+      document.getElementById("notice-content-edit").style.display = "block";
+      toggleBtn.style.display = "none";
+      saveBtn.style.display = "inline-block";
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      const newTitle = document.getElementById("notice-title-edit").value;
+      const newContent = document.getElementById("notice-content-edit").value;
+
+      const response = await fetchWithAuth("/api/notice/update/", {
+        method: "POST",
+        body: JSON.stringify({
+          id: noticeId,
+          title: newTitle,
+          content: newContent
+        })
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("수정 완료!");
+        location.reload();
+      } else {
+        alert("수정 실패: " + (result.error || "알 수 없는 오류"));
+      }
+    });
+  }
+});
+
+// 공지 삭제 함수
+async function deleteNotice(id) {
+  if (!confirm("정말 삭제하시겠습니까?")) return;
+
+  const response = await fetchWithAuth("/api/notice/delete/", {
+    method: "POST",
+    body: JSON.stringify({ id })
+  });
+
+  const result = await response.json();
+  if (response.ok) {
+    alert("삭제되었습니다.");
+    location.href = "/noticelist";
+  } else {
+    alert("삭제 실패: " + (result.error || "알 수 없는 오류"));
+  }
+}
+</script>
+{% endblock %}

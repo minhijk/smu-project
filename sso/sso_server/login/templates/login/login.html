@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>통합 로그인</title>
+    <link rel="stylesheet" href="{% static 'login/login.css' %}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <form id="login-form" class="login-container">
+            <div class="header">
+                <div class="lock-icon"></div>
+                <h2>LOGIN</h2>
+            </div>
+
+            <label for="student_id">학번/교직원번호</label><br>
+            <input type="text" name="student_id" id="student_id" required placeholder="학번/교직원번호"><br><br>
+
+            <label for="password">비밀번호</label><br>
+            <input type="password" id="password" required placeholder="비밀번호"><br><br>
+
+            <button type="submit">로그인</button>
+
+            <div class="links-section">
+                <a href="{% url 'login:password_reset' %}"><span class="arrow-icon">›</span> 비밀번호 초기화</a>
+                <a href="#"><span class="arrow-icon">›</span> 학번/교직원번호 조회</a>
+                <a href="#"><span class="arrow-icon">›</span> 로그인/로그아웃 유의사항</a>
+            </div>
+        </form>
+
+        <script>
+    // ✅ URL에서 redirect_uri 파라미터 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUri = urlParams.get("redirect_uri");
+
+    document.getElementById("login-form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const student_id = document.getElementById("student_id").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const response = await fetch("http://127.0.0.1:8001/api/token/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ student_id, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                // ✅ 리다이렉트 URI로 이동하며 토큰 전달
+                if (redirectUri) {
+                    const targetUrl = `${redirectUri}?access=${data.access}&refresh=${data.refresh}`;
+                    window.location.href = targetUrl;
+                } else {
+                    alert("리다이렉트 주소가 없습니다.");
+                }
+            } else {
+                alert("로그인 실패: 학번 또는 비밀번호 오류입니다.");
+            }
+        } catch (err) {
+            console.error("로그인 중 오류 발생:", err);
+            alert("서버 오류가 발생했습니다.");
+        }
+    });
+</script>
+
+
+    </div>
+</body>
+</html>

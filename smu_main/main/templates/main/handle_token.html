@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 처리 중...</title>
+</head>
+<body>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const access = params.get("access");
+    const refresh = params.get("refresh");
+
+    if (access && refresh) {
+      localStorage.setItem("access", access);
+      localStorage.setItem("refresh", refresh);
+      window.location.replace("/");  // 홈으로 이동
+    } else {
+      alert("토큰 전달 실패");
+      window.location.replace("/");
+    }
+  </script>
+</body>
+</html>

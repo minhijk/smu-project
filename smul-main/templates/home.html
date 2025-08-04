@@ -117,6 +117,10 @@
 
 <!-- 로그인 정보 -->
 <script>
+function redirectSSO() {
+    const redirect_uri = window.location.origin + "/handle-token/";
+    window.location.href = `http://127.0.0.1:8001/login/?redirect_uri=${redirect_uri}`;
+}
 fetch('/accounts/api/user/', {
     credentials: 'include',
     headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -130,7 +134,7 @@ fetch('/accounts/api/user/', {
 })
 .catch(() => {
     document.getElementById('userInfoArea').innerHTML =
-        `<a href="/accounts/login/">로그인</a>`;
+        `<a href="#" onclick="redirectSSO()">로그인</a>`;
 });
 </script>
 

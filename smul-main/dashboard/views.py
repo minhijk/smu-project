@@ -1,11 +1,17 @@
-# dashboard/views.py
 import requests
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from smul.academic.models import StudentProfile
+from smul.utils import decode_jwt_from_request  # ✅ 추가
+from django.contrib.auth import login, get_user_model
+from smul.utils import decode_jwt
 
-@login_required
 def home(request):
+    payload = decode_jwt_from_request(request)
+    if not payload:
+        return redirect("http://127.0.0.1:8001/login/?redirect_uri=http://127.0.0.1:8002/handle-token/")
+    
+    student_id = payload.get("student_id")
+
     # 1. 공지사항 (더미 데이터)
     notice_data = [
         {"title": "[학사] 여름 계절학기 수강신청 안내"},
@@ -17,7 +23,7 @@ def home(request):
 
     # 2. 학점 현황 (DB 연동)
     try:
-        profile = StudentProfile.objects.get(user=request.user)
+        profile = StudentProfile.objects.get(student_id=student_id)  # ✅ 수정
         grade_info = {
             "total": profile.total_credit,
             "major": profile.major_credit,
@@ -72,8 +78,41 @@ def home(request):
         "notice_list": notice_data,
         "grade": grade_info,
         "timetable": timetable_data,
-        "username": request.user.username,
+        "username": payload.get("name", "비로그인"),
         "weather": weather
     }
 
     return render(request, 'home.html', context)
+
+
+def handle_token(request):
+    access_token = request.GET.get("access")
+    if not access_token:
+        return redirect("/")
+
+    payload = decode_jwt(access_token)
+    if not payload:
+        return redirect("/")
+
+    request.session["access_token"] = access_token
+    request.session.set_expiry(3600)
+
+    User = get_user_model()
+    student_id = payload.get("student_id")
+    name = payload.get("name")
+
+    # ✅ 사용자 없으면 생성
+    user, created = User.objects.get_or_create(username=student_id, defaults={
+        "first_name": name,
+        "is_active": True,
+    })
+
+    # ✅ 비밀번호 없을 경우 기본값 설정 (로그인 용도는 아님)
+    if not user.has_usable_password():
+        user.set_unusable_password()
+        user.save()
+
+    # ✅ Django 세션 로그인
+    login(request, user)
+
+    return redirect("/")

@@ -22,6 +22,7 @@ urlpatterns = [
     path('login/', include('login.urls')),
     path('PwdResetEmail/', include('PwdResetEmail.urls')),
     path('PwdResetSMS/', include('PwdResetSMS.urls')),
+    path("admin/", admin.site.urls),
 ]
 
 

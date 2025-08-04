@@ -51,6 +51,7 @@ from django.core.mail import send_mail
 FAKE_USER_DB = {
     ('202321290', '강민서'): '01095218200',
     ('20240001', '김교수'): '01098765432',
+    ('202121320', '이민혁'): '01098297141'
 }
 
 def generate_temp_password(length=8):
@@ -131,7 +132,8 @@ def generate_temp_password(length=10):
 # 이메일 DB (임시)
 FAKE_USER_DB = {
     ('202321290', '강민서'): 'snrntpsy0629@naver.com',
-    ('20240001', '김교수'): 'kim@smu.ac.kr'
+    ('20240001', '김교수'): 'kim@smu.ac.kr',
+    ('202121320', '이민혁'): 'hyeok7141@daum.net'
 }
 
 @api_view(['POST'])

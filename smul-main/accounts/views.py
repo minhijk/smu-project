@@ -15,6 +15,7 @@ from smul.academic.models import StudentProfile
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from smul.utils import decode_jwt_from_request
 
 
 # --------------------------
@@ -32,13 +33,25 @@ def get_client_ip(request):
 # --------------------------
 # ✅ DRF API
 # --------------------------
-
 class UserInfoAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
+        # ✅ 우선 Django 로그인 사용자 우선 처리
+        if request.user.is_authenticated:
+            return Response({
+                'username': request.user.username,
+                'first_name': request.user.first_name
+            })
+
+        # 그게 안 되면 세션에 저장된 access_token 기반으로 판단
+        payload = decode_jwt_from_request(request)
+        if not payload:
+            return Response({'error': 'unauthorized'}, status=401)
+
+        return Response({
+            'username': payload.get("student_id"),
+            'first_name': payload.get("name")
+        })
+
 
 
 class UserUpdateAPIView(APIView):
@@ -102,7 +115,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('/')
 
 
 # --------------------------

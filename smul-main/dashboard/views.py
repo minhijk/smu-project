@@ -1,9 +1,9 @@
 import requests
 from django.shortcuts import render, redirect
 from smul.academic.models import StudentProfile
-from smul.utils import decode_jwt_from_request  # ✅ 추가
+from dashboard.utils import decode_jwt_from_request  # ✅ 추가
 from django.contrib.auth import login, get_user_model
-from smul.utils import decode_jwt
+from dashboard.utils import decode_jwt
 
 def home(request):
     payload = decode_jwt_from_request(request)
@@ -87,6 +87,11 @@ def home(request):
 
 def handle_token(request):
     access_token = request.GET.get("access")
+    refresh_token = request.GET.get("refresh")
+
+    print("🔐 access_token =", access_token)
+    print("🔍 refresh_token =", refresh_token)
+
     if not access_token:
         return redirect("/")
 
@@ -95,7 +100,8 @@ def handle_token(request):
         return redirect("/")
 
     request.session["access_token"] = access_token
-    request.session.set_expiry(3600)
+    request.session["refresh_token"] = refresh_token
+    request.session.set_expiry(600)
 
     User = get_user_model()
     student_id = payload.get("student_id")
@@ -115,4 +121,13 @@ def handle_token(request):
     # ✅ Django 세션 로그인
     login(request, user)
 
+    return redirect("/")
+
+# 서버 세션
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+def logout_view(request):
+    logout(request)              # Django 인증 로그아웃
+    request.session.flush()      # 세션 정보 전체 제거 (access_token 포함)
     return redirect("/")

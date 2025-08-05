@@ -11,8 +11,8 @@
     const refresh = params.get("refresh");
 
     if (access && refresh) {
-      localStorage.setItem("access", access);
-      localStorage.setItem("refresh", refresh);
+      sessionStorage.setItem("access", access);
+      SessionStorage.setItem("refresh", refresh);
       window.location.replace("/");
     } else {
       alert("토큰 전달 실패");

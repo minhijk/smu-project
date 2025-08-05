@@ -23,7 +23,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     ]
     student_id = models.CharField(max_length=20, unique=True)
     full_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20, null=True, blank=True)
     email = models.EmailField(blank=True)
+    address = models.CharField(max_length=300, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
 
     is_active = models.BooleanField(default=True)

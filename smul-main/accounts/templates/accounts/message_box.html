@@ -72,7 +72,7 @@
         <div class="sidebar">
             <div class="sidebar-title">마이 페이지</div>
             <ul>
-                <li><a href="{% url 'user_info_page' %}" class="{% if request.path == '/accounts/user_info/' %}active{% endif %}">개인정보변경</a></li>
+                <li><a href="{% url 'profile' %}" class="{% if request.path == '/accounts/user_info/' %}active{% endif %}">개인정보변경</a></li>
                 <li><a href="{% url 'message_box' %}" class="{% if request.path == '/accounts/message_box/' %}active{% endif %}">쪽지함</a></li>
                 <li><a href="#">일정(할일)관리</a></li>
             </ul>

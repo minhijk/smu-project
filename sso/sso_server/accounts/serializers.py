@@ -37,3 +37,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     class Meta:
         fields = ("student_id", "password")
+
+from rest_framework import serializers
+from .models import CustomUser
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['student_id', 'full_name', 'email', 'phone', 'address']

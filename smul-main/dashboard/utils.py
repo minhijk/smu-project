@@ -1,6 +1,7 @@
-# smul/utils.py
+# dashboard/utils.py
 
-from jose import jwt
+#from jose import jwt
+import jwt
 from django.conf import settings
 
 def decode_jwt(token):
@@ -17,3 +18,6 @@ def decode_jwt_from_request(request):
         return jwt.decode(token, settings.PUBLIC_KEY, algorithms=["RS256"])
     except Exception:
         return None
+
+def get_jwt_from_session(request, token_name="access_token"):
+    return request.session.get(token_name)

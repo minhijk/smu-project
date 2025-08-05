@@ -2,14 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.shortcuts import render
 from dashboard.views import handle_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('dashboard.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('accounts/api/', include('accounts.api_urls')),  # ✅ 추가!
+    path('accounts/', include('accounts.api_urls')),
     path('smul/', include('smul.urls')),
     path('academic/', include('smul.academic.urls')),
     path('api/academic/',include('smul.academic.api_urls')),

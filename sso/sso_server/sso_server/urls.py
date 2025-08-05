@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from accounts.views import send_code, verify_code, send_email_code
 from accounts.views import send_email_code, verify_email_code
+from accounts.views import UserInfoAPIView, ChangePasswordAPIView
 from accounts.views import LogoutView, CustomTokenObtainPairView  # ✅ 이 줄이 꼭 필요합니다!
 from django.urls import path
 
@@ -23,6 +24,7 @@ urlpatterns = [
     path('PwdResetEmail/', include('PwdResetEmail.urls')),
     path('PwdResetSMS/', include('PwdResetSMS.urls')),
     path("admin/", admin.site.urls),
+    path('api/user-info/', UserInfoAPIView.as_view(), name='user_info'),
+    path('api/change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
 ]
-
 

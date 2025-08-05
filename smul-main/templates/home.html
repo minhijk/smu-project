@@ -129,17 +129,45 @@ fetch('/accounts/api/user/', {
 .then(data => {
     document.getElementById('userInfoArea').innerHTML =
         `${data.first_name} (${data.username}) | 
-         <a href="/accounts/logout/">로그아웃</a> | 
+         <a href="#"onclick="logout()">로그아웃</a> | 
          <a href="/accounts/profile/">내 정보</a>`;
 })
 .catch(() => {
     document.getElementById('userInfoArea').innerHTML =
         `<a href="#" onclick="redirectSSO()">로그인</a>`;
 });
-</script>
+
+function logout() {
+  const accessToken = sessionStorage.getItem("access");
+  const refreshToken = sessionStorage.getItem("refresh");
+
+  // 1. 클라이언트 토큰 제거 (먼저 UI 반응 빠르게)
+  sessionStorage.clear();
+  localStorage.clear();
+
+  // 2. 서버(SMUL) 세션 로그아웃
+  fetch("/logout/", { credentials: "include" });
+
+  // 3. SSO 서버에 refresh token 무효화 요청
+  if (refreshToken) {
+    fetch("http://127.0.0.1:8001/api/token/logout/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + refreshToken
+      },
+      body: JSON.stringify({ refresh: refreshToken })
+    }).finally(() => {
+      window.location.href = "/";
+    });
+  } else {
+    window.location.href = "/";
+  }
+}
+
 
 <!-- Chart.js 도넛 그래프 -->
-<script>
+
 document.addEventListener('DOMContentLoaded', function () {
     const ctx = document.getElementById('gradeChart')?.getContext('2d');
     if (!ctx) return;
